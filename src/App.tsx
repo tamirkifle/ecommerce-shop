@@ -60,6 +60,10 @@ const GlobalStyles = css`
     color: var(--text);
   }
 
+  header {
+    padding: 0 1rem;
+  }
+
   /* Utility Classes */
   .container {
     max-width: 1400px;
@@ -71,7 +75,9 @@ function App() {
   return (
     <Router>
       <Global styles={GlobalStyles} />
-      <NavBar />
+      <header>
+        <NavBar />
+      </header>
       <Routes>
         <Route path="/" element={<ProductListing />} />
         <Route path="/:category" element={<ProductListing />} />
