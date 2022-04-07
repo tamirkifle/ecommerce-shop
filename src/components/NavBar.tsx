@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { ReactComponent as CartIcon } from "../assets/empty_cart.svg";
+import { categoryList } from "../mockData";
 
 const StyledNav = styled.nav`
   text-transform: uppercase;
@@ -30,6 +31,7 @@ const StyledNav = styled.nav`
     padding: 1rem;
     height: var(--nav-height, 80px);
     text-decoration: none;
+    color: inherit;
   }
 
   .nav-link:before {
@@ -67,21 +69,15 @@ class NavBar extends Component {
     return (
       <StyledNav className="container">
         <ul className="nav--links">
-          <li>
-            <Link className="nav-link" to="/women">
-              Women
-            </Link>
-          </li>
-          <li>
-            <Link className="nav-link" to="/men">
-              Men
-            </Link>
-          </li>
-          <li>
-            <Link className="nav-link" to="/kids">
-              Kids
-            </Link>
-          </li>
+          {categoryList.map((category) => {
+            return (
+              <li key={String(category.id)}>
+                <Link className="nav-link" to={`/${category.name}`}>
+                  {category.name}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
         <div className="nav--logo-container">
           <Logo />
