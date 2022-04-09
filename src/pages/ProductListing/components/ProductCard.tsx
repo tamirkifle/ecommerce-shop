@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Component } from "react";
+import { Component, MouseEventHandler } from "react";
 import { Product } from "../../../types/Product";
 import { ReactComponent as CartIcon } from "../../../assets/empty_cart_white.svg";
 
@@ -52,6 +52,7 @@ const CartButton = styled.button`
 
 type ProductCardProps = {
   product: Product;
+  handleClick: MouseEventHandler<HTMLDivElement>;
 };
 
 class ProductCard extends Component<ProductCardProps> {
@@ -72,9 +73,7 @@ class ProductCard extends Component<ProductCardProps> {
   render() {
     const { product } = this.props;
     return (
-      <Card
-      // onClick={() => console.log("Opening Product Description")}
-      >
+      <Card onClick={this.props.handleClick}>
         <img
           src={product.gallery[0]}
           alt={product.name}

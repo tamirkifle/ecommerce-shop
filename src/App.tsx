@@ -2,6 +2,7 @@ import NavBar from "./components/NavBar";
 import { ProductListing } from "./pages";
 import { Global, css } from "@emotion/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ProductDescription from "./pages/ProductDescription/ProductDescription";
 
 const GlobalStyles = css`
   :root {
@@ -81,6 +82,7 @@ function App() {
       <Routes>
         <Route path="/" element={<ProductListing />} />
         <Route path="/:category" element={<ProductListing />} />
+        <Route path="/product/:productId" element={<ProductDescription />} />
       </Routes>
     </Router>
   );

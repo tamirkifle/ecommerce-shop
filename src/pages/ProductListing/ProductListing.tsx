@@ -23,6 +23,7 @@ const ProductGrid = styled.div`
 
 interface Params {
   category: string;
+  navigate: Function; //import type of NavigateFunction
 }
 
 type Props = WithRouterProps<Params>;
@@ -38,7 +39,13 @@ class ProductListing extends Component<Props> {
         <h2>{category}</h2>
         <ProductGrid>
           {currentProducts.map((product: Product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              handleClick={() => {
+                this.props.navigate(`/product/${product.id}`);
+              }}
+            />
           ))}
         </ProductGrid>
       </ProductListingStlyed>
