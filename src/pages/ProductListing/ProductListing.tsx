@@ -6,8 +6,6 @@ import { withRouter, WithRouterProps } from "../../utils/withRouter";
 import { Product } from "../../types/Product";
 
 const ProductListingStlyed = styled.div`
-  margin-top: 5rem;
-  margin-bottom: 5rem;
   h2 {
     text-transform: capitalize;
     margin-bottom: 5rem;
@@ -35,7 +33,7 @@ class ProductListing extends Component<Props> {
       ? products.categories[category as keyof typeof products.categories]
       : products.categories.all;
     return (
-      <ProductListingStlyed className="container">
+      <ProductListingStlyed>
         <h2>{category}</h2>
         <ProductGrid>
           {currentProducts.map((product: Product) => (

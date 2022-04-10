@@ -3,16 +3,21 @@ import { ProductListing } from "./pages";
 import { Global, css } from "@emotion/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProductDescription from "./pages/ProductDescription/ProductDescription";
+import styled from "@emotion/styled";
 
 const GlobalStyles = css`
   :root {
     --text: #43464e;
+    --dark: #1d1f22;
     --accent: #5ece7b;
     --ff-main: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     --ff-roboto: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     --ff-roboto-c: "Roboto Condensed", -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+    --ff-source-s: "Source Sans Pro", -apple-system, BlinkMacSystemFont,
       "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
       "Helvetica Neue", sans-serif;
     --nav-height: 80px;
@@ -36,7 +41,7 @@ const GlobalStyles = css`
     margin: 0;
   }
 
-  ul {
+  ul[class] {
     margin: 0;
     padding: 0;
     list-style-type: none;
@@ -58,7 +63,7 @@ const GlobalStyles = css`
   /* General Styles */
   body {
     font-family: var(--ff-main);
-    color: var(--text);
+    color: var(--dark);
   }
 
   header {
@@ -72,6 +77,10 @@ const GlobalStyles = css`
   }
 `;
 
+const MainContent = styled.main`
+  margin: 5rem auto;
+`;
+
 function App() {
   return (
     <Router>
@@ -79,11 +88,13 @@ function App() {
       <header>
         <NavBar />
       </header>
-      <Routes>
-        <Route path="/" element={<ProductListing />} />
-        <Route path="/:category" element={<ProductListing />} />
-        <Route path="/product/:productId" element={<ProductDescription />} />
-      </Routes>
+      <MainContent className="container">
+        <Routes>
+          <Route path="/" element={<ProductListing />} />
+          <Route path="/:category" element={<ProductListing />} />
+          <Route path="/product/:productId" element={<ProductDescription />} />
+        </Routes>
+      </MainContent>
     </Router>
   );
 }
