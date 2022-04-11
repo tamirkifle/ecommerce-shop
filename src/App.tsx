@@ -67,7 +67,7 @@ const GlobalStyles = css`
     color: var(--dark);
   }
 
-  header {
+  .main-header {
     padding: 0 1rem;
   }
 
@@ -75,6 +75,21 @@ const GlobalStyles = css`
   .container {
     max-width: 1400px;
     margin: 0 auto;
+  }
+
+  .split {
+    display: flex;
+  }
+
+  .split-column {
+    display: flex;
+    flex-direction: column;
+  }
+  .flow-content > * + * {
+    margin-top: var(--flow-spacer, 1rem);
+  }
+  .flow-x-content > * + * {
+    margin-left: var(--flow-spacer, 1rem);
   }
 `;
 
@@ -87,7 +102,7 @@ function App() {
     <Router>
       <Global styles={GlobalStyles} />
       <ScrollToTop />
-      <header>
+      <header className="main-header">
         <NavBar />
       </header>
       <MainContent className="container">
