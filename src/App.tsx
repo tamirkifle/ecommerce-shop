@@ -3,6 +3,7 @@ import { ProductListing } from "./pages";
 import { Global, css } from "@emotion/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProductDescription from "./pages/ProductDescription/ProductDescription";
+import ScrollToTop from "./utils/ScrollToTop";
 import styled from "@emotion/styled";
 
 const GlobalStyles = css`
@@ -85,6 +86,7 @@ function App() {
   return (
     <Router>
       <Global styles={GlobalStyles} />
+      <ScrollToTop />
       <header>
         <NavBar />
       </header>
