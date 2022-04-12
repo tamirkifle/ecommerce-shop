@@ -4,6 +4,7 @@ import { products } from "../../mockData";
 import { AttributeViewer } from "../../components/AttributeRelated";
 import { CartItem } from "../../types";
 import MiniImageSlider from "../../components/MiniImageSlider";
+import { Link } from "react-router-dom";
 
 const CartStyled = styled.div`
   max-width: 1200px;
@@ -38,6 +39,14 @@ const Price = styled.p`
   font-size: 1.25rem;
   font-weight: 700;
 `;
+
+const NoCartItems = styled.div`
+  --flow-spacer: 2rem;
+  p {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+`;
 interface CartProps {}
 
 interface CartState {
@@ -64,31 +73,42 @@ class Cart extends Component<CartProps, CartState> {
         } as CartItem)
     ),
   };
+
+  cartHasItems = this.state.cartItems.length > 0;
   render() {
     return (
       <CartStyled>
         <h2>Cart</h2>
-        {this.state.cartItems.map((item) => (
-          <CartItemStyled>
-            <div className="flow-content">
-              <ProductTitle className="flow-content">
-                <h3 className="product-brand">{item.brand}</h3>
-                <h3 className="product-name">{item.name}</h3>
-              </ProductTitle>
-              <Price>
-                $
-                {
-                  item.prices.find((price) => price.currency.label === "USD")
-                    ?.amount
-                }
-              </Price>
-              {item.selectedAttributes.map((attribute) => (
-                <AttributeViewer attribute={attribute} />
-              ))}
-            </div>
-            <MiniImageSlider gallery={item.gallery} />
-          </CartItemStyled>
-        ))}
+        {this.cartHasItems ? (
+          this.state.cartItems.map((item) => (
+            <CartItemStyled>
+              <div className="flow-content">
+                <ProductTitle className="flow-content">
+                  <h3 className="product-brand">{item.brand}</h3>
+                  <h3 className="product-name">{item.name}</h3>
+                </ProductTitle>
+                <Price>
+                  $
+                  {
+                    item.prices.find((price) => price.currency.label === "USD")
+                      ?.amount
+                  }
+                </Price>
+                {item.selectedAttributes.map((attribute) => (
+                  <AttributeViewer attribute={attribute} />
+                ))}
+              </div>
+              <MiniImageSlider gallery={item.gallery} />
+            </CartItemStyled>
+          ))
+        ) : (
+          <NoCartItems className="flow-content">
+            <p>Your Cart is empty.</p>
+            <Link to="/" className="btn accent">
+              View our Products
+            </Link>
+          </NoCartItems>
+        )}
 
         {/* <QuantitySelector /> */}
       </CartStyled>

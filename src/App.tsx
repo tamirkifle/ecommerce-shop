@@ -87,6 +87,19 @@ const GlobalStyles = css`
   .flow-content > * + * {
     margin-top: var(--flow-spacer, 1rem);
   }
+
+  .btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: var(--dark, black);
+    border: 1px solid var(--dark, black);
+  }
+
+  .accent {
+    color: white;
+    background-color: var(--accent);
+  }
 `;
 
 const MainContent = styled.main`
