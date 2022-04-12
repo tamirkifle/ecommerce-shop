@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Component } from "react";
+import { Attribute, AttributeItem, SelectedAttribute } from "../types";
 
 export const AttributeInputStyled = styled.div`
   .section-title {
@@ -46,16 +47,7 @@ const AttributeItemStyled = styled.button`
 `;
 
 interface AttributeInputProps {
-  attribute: {
-    id: string;
-    name: string;
-    type: string;
-    items: {
-      id: string;
-      displayValue: string;
-      value: string;
-    }[];
-  };
+  attribute: Attribute;
 }
 
 interface AttributeInputState {
@@ -110,21 +102,8 @@ export class AttributeInput extends Component<
 }
 
 interface AttributeOptionProps {
-  attribute: {
-    id: string;
-    name: string;
-    type: string;
-    items: {
-      id: string;
-      displayValue: string;
-      value: string;
-    }[];
-  };
-  attributeItem: {
-    id: string;
-    displayValue: string;
-    value: string;
-  };
+  attribute: Attribute | SelectedAttribute;
+  attributeItem: AttributeItem;
   selectAttribute?: (attributeName: string, attributeItemValue: string) => void;
   isSelected: boolean;
 }
@@ -157,16 +136,7 @@ export class AttributeOption extends Component<AttributeOptionProps> {
 }
 
 interface AttributeViewerProps {
-  attribute: {
-    id: string;
-    name: string;
-    type: string;
-    items: {
-      id: string;
-      displayValue: string;
-      value: string;
-    }[];
-  };
+  attribute: SelectedAttribute;
 }
 export class AttributeViewer extends Component<AttributeViewerProps> {
   render() {
@@ -176,7 +146,7 @@ export class AttributeViewer extends Component<AttributeViewerProps> {
         <AttributeOption
           key={this.props.attribute.id}
           attribute={this.props.attribute}
-          attributeItem={this.props.attribute.items[0]}
+          attributeItem={this.props.attribute.item}
           isSelected={true}
         />
       </AttributeInputStyled>

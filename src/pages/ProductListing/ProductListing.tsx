@@ -3,7 +3,8 @@ import { Component } from "react";
 import ProductCard from "./components/ProductCard";
 import { products } from "../../mockData";
 import { withRouter, WithRouterProps } from "../../utils/withRouter";
-import { Product } from "../../types/Product";
+import { Product } from "../../types";
+import { NavigateFunction } from "react-router-dom";
 
 const ProductListingStlyed = styled.div`
   h2 {
@@ -19,14 +20,14 @@ const ProductGrid = styled.div`
   gap: 6rem;
 `;
 
-interface Params {
+interface ProductListingParams {
   category: string;
-  navigate: Function; //import type of NavigateFunction
+  navigate: NavigateFunction;
 }
 
-type Props = WithRouterProps<Params>;
+type ProductListingProps = WithRouterProps<ProductListingParams>;
 
-class ProductListing extends Component<Props> {
+class ProductListing extends Component<ProductListingProps> {
   render() {
     const { category } = this.props.match.params;
     const currentProducts = category

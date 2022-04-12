@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Component, MouseEventHandler } from "react";
-import { Product } from "../../../types/Product";
 import { ReactComponent as CartIcon } from "../../../assets/empty_cart_white.svg";
+import { Price, Product } from "../../../types";
 
 const Card = styled.div`
   width: 386px;
@@ -59,11 +59,11 @@ class ProductCard extends Component<ProductCardProps> {
   state = { priceWithCurrency: null };
   componentDidMount() {
     let price = this.props.product.prices.find(
-      (price) => price.currency.label === "USD"
+      (price: Price) => price.currency.label === "USD"
     );
     if (!price) {
       price = this.props.product.prices.find(
-        (price) => price.currency.label === "USD"
+        (price: Price) => price.currency.label === "USD"
       );
     }
     this.setState({

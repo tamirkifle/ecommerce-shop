@@ -1,12 +1,5 @@
 import styled from "@emotion/styled";
 import { Component, createRef } from "react";
-interface Props {
-  images: string[];
-}
-
-interface State {
-  selectedIndex: number;
-}
 
 const ViewerContainer = styled.div`
   --viewerwh: 37.5rem;
@@ -82,10 +75,16 @@ const CurrentImageWindow = styled.div`
     /* outline: 1px dashed red; */
   }
 `;
+interface ImageViewerProps {
+  images: string[];
+}
 
+interface ImageViewerState {
+  selectedIndex: number;
+}
 //TODO: No Image
-class ImageViewer extends Component<Props, State> {
-  state: State = { selectedIndex: 0 };
+class ImageViewer extends Component<ImageViewerProps, ImageViewerState> {
+  state: ImageViewerState = { selectedIndex: 0 };
   previewImagesRef: React.RefObject<HTMLDivElement> = createRef();
   render() {
     const visibleImgs = 5; //(600px + 40px) / (80px + 40px) rounded down
