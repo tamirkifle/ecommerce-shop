@@ -1,5 +1,5 @@
 import NavBar from "./components/NavBar";
-import { ProductListing, ProductDescription } from "./pages";
+import { ProductListing, ProductDescription, Cart } from "./pages";
 import { Global, css } from "@emotion/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./utils/ScrollToTop";
@@ -54,9 +54,6 @@ const GlobalStyles = css`
     background: transparent;
     color: inherit;
     font: inherit;
-  }
-
-  button:hover {
     cursor: pointer;
   }
 
@@ -109,6 +106,7 @@ function App() {
           <Route path="/" element={<ProductListing />} />
           <Route path="/:category" element={<ProductListing />} />
           <Route path="/product/:productId" element={<ProductDescription />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </MainContent>
     </Router>
