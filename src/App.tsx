@@ -63,29 +63,29 @@ const GlobalStyles = css`
     color: var(--dark);
   }
 
-  .main-header {
-    padding: 0 1rem;
-  }
-
   /* Utility Classes */
   .container {
     max-width: 1400px;
     margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
   .split {
     display: flex;
   }
-
+  .split > * + * {
+    margin-left: var(--flex-spacer, 1rem);
+  }
   .split-column {
     display: flex;
     flex-direction: column;
   }
+  .split-column > * + * {
+    margin-top: var(--flex-spacer, 1rem);
+  }
   .flow-content > * + * {
     margin-top: var(--flow-spacer, 1rem);
-  }
-  .flow-x-content > * + * {
-    margin-left: var(--flow-spacer, 1rem);
   }
 `;
 
@@ -98,7 +98,7 @@ function App() {
     <Router>
       <Global styles={GlobalStyles} />
       <ScrollToTop />
-      <header className="main-header">
+      <header>
         <NavBar />
       </header>
       <MainContent className="container">

@@ -10,10 +10,9 @@ export const AttributeInputStyled = styled.div`
   }
 `;
 const Chooser = styled.div`
-  display: flex;
+  --flex-spacer: 0.75rem;
 `;
 const AttributeItemStyled = styled.button`
-  --flow-spacer: 0.75rem;
   width: 63px;
   height: 45px;
   border: 1px solid var(--dark, black);
@@ -81,7 +80,7 @@ export class AttributeInput extends Component<
     return (
       <AttributeInputStyled className="flow-content">
         <h4 className="section-title">{attribute.name}:</h4>
-        <Chooser className="flow-x-content">
+        <Chooser className="split">
           {attribute.items.map((item) => (
             <AttributeOption
               key={item.id}
