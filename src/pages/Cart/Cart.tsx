@@ -31,6 +31,7 @@ const ProductTitle = styled.header`
 const CartItemStyled = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-top: 1px solid #e5e5e5;
   padding: 1.25rem 0;
 `;
