@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Component } from "react";
 import ImageViewer from "../../components/ImageViewer";
-import AttributeInput from "../../components/AttributeInput";
+import { AttributeInput } from "../../components/AttributeRelated";
 import { products } from "../../mockData";
 import { withRouter, WithRouterProps } from "../../utils/withRouter";
 import { Product } from "../../types/Product";
