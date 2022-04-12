@@ -3,8 +3,10 @@ import { Component } from "react";
 import { products } from "../../mockData";
 import { AttributeViewer } from "../../components/AttributeRelated";
 import { CartItem } from "../../types";
+import MiniImageSlider from "../../components/MiniImageSlider";
 
 const CartStyled = styled.div`
+  max-width: 1200px;
   h2 {
     font-size: 2rem;
     font-weight: 700;
@@ -26,14 +28,15 @@ const ProductTitle = styled.header`
 `;
 
 const CartItemStyled = styled.div`
+  display: flex;
+  justify-content: space-between;
   border-top: 1px solid #e5e5e5;
   padding: 1.25rem 0;
-  header {
-  }
-  .price {
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
+`;
+
+const Price = styled.p`
+  font-size: 1.25rem;
+  font-weight: 700;
 `;
 interface CartProps {}
 
@@ -51,6 +54,7 @@ class Cart extends Component<CartProps, CartState> {
           brand: product.brand,
           name: product.name,
           prices: product.prices,
+          gallery: product.gallery,
           selectedAttributes: product.attributes.map((attribute) => ({
             id: attribute.id,
             name: attribute.name,
@@ -65,26 +69,28 @@ class Cart extends Component<CartProps, CartState> {
       <CartStyled>
         <h2>Cart</h2>
         {this.state.cartItems.map((item) => (
-          <CartItemStyled className="flow-content">
-            <ProductTitle className="flow-content">
-              <h3 className="product-brand">{item.brand}</h3>
-              <h3 className="product-name">{item.name}</h3>
-            </ProductTitle>
-            <p className="price">
-              $
-              {
-                item.prices.find((price) => price.currency.label === "USD")
-                  ?.amount
-              }
-            </p>
-            {item.selectedAttributes.map((attribute) => (
-              <AttributeViewer attribute={attribute} />
-            ))}
+          <CartItemStyled>
+            <div className="flow-content">
+              <ProductTitle className="flow-content">
+                <h3 className="product-brand">{item.brand}</h3>
+                <h3 className="product-name">{item.name}</h3>
+              </ProductTitle>
+              <Price>
+                $
+                {
+                  item.prices.find((price) => price.currency.label === "USD")
+                    ?.amount
+                }
+              </Price>
+              {item.selectedAttributes.map((attribute) => (
+                <AttributeViewer attribute={attribute} />
+              ))}
+            </div>
+            <MiniImageSlider gallery={item.gallery} />
           </CartItemStyled>
         ))}
 
         {/* <QuantitySelector /> */}
-        {/* <MiniImageSlider /> */}
       </CartStyled>
     );
   }
