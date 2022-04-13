@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./utils/ScrollToTop";
 import styled from "@emotion/styled";
 import GlobalStyles from "./GlobalStyles";
+import client from "./apolloClient";
+import { ApolloProvider } from "@apollo/client";
 
 const MainContent = styled.main`
   margin: 5rem auto;
@@ -12,21 +14,26 @@ const MainContent = styled.main`
 
 function App() {
   return (
-    <Router>
-      <Global styles={GlobalStyles} />
-      <ScrollToTop />
-      <header>
-        <NavBar />
-      </header>
-      <MainContent className="container">
-        <Routes>
-          <Route path="/" element={<ProductListing />} />
-          <Route path="/:category" element={<ProductListing />} />
-          <Route path="/product/:productId" element={<ProductDescription />} />
-          <Route path="/cart" element={<Cart />} />
-        </Routes>
-      </MainContent>
-    </Router>
+    <ApolloProvider client={client}>
+      <Router>
+        <Global styles={GlobalStyles} />
+        <ScrollToTop />
+        <header>
+          <NavBar />
+        </header>
+        <MainContent className="container">
+          <Routes>
+            <Route path="/" element={<ProductListing />} />
+            <Route path="/:category" element={<ProductListing />} />
+            <Route
+              path="/product/:productId"
+              element={<ProductDescription />}
+            />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+        </MainContent>
+      </Router>
+    </ApolloProvider>
   );
 }
 
