@@ -43,6 +43,7 @@ export type CartItem = {
   id: string;
   brand: string;
   name: string;
+  quantity: number;
   gallery: string[];
   prices: Price[];
   selectedAttributes: SelectedAttribute[];

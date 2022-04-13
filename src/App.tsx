@@ -88,6 +88,13 @@ const GlobalStyles = css`
     margin-top: var(--flow-spacer, 1rem);
   }
 
+  .justify-center {
+    justify-content: center;
+  }
+  .align-center {
+    align-items: center;
+  }
+
   .btn {
     display: inline-block;
     padding: 0.5rem 1rem;
