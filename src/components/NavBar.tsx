@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { ReactComponent as CartIcon } from "../assets/empty_cart.svg";
-import { getApolloContext, gql } from "@apollo/client";
+import { getApolloContext } from "@apollo/client";
 import { Category, Currency } from "../types";
 import Loading from "./Loading";
+import { NAVBAR__QUERY } from "../graphql/queries";
 
 const StyledNav = styled.nav`
   text-transform: uppercase;
@@ -67,18 +68,6 @@ const StyledNav = styled.nav`
 `;
 
 const ctx = getApolloContext();
-
-const NAVBAR__QUERY = gql`
-  query {
-    categories {
-      name
-    }
-    currencies {
-      label
-      symbol
-    }
-  }
-`;
 
 interface NavBarProps {}
 interface NavBarState {
