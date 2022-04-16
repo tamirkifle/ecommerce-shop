@@ -48,3 +48,7 @@ export type CartItem = {
   prices: Price[];
   selectedAttributes: SelectedAttribute[];
 };
+
+export type Category = {
+  name: string;
+};

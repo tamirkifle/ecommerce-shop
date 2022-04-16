@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { ReactComponent as CartIcon } from "../assets/empty_cart.svg";
-import { categoryList } from "../mockData";
+import { getApolloContext, gql } from "@apollo/client";
+import { Category, Currency } from "../types";
+import Loading from "./Loading";
 
 const StyledNav = styled.nav`
   text-transform: uppercase;
@@ -64,14 +66,54 @@ const StyledNav = styled.nav`
   }
 `;
 
-class NavBar extends Component {
+const ctx = getApolloContext();
+
+const NAVBAR__QUERY = gql`
+  query {
+    categories {
+      name
+    }
+    currencies {
+      label
+      symbol
+    }
+  }
+`;
+
+interface NavBarProps {}
+interface NavBarState {
+  categories: Category[] | null;
+  currencies: Currency[] | null;
+  loading: boolean;
+}
+class NavBar extends Component<NavBarProps, NavBarState> {
+  static contextType = ctx;
+  state: NavBarState = {
+    categories: null,
+    currencies: null,
+    loading: true,
+  };
+
+  async componentDidMount() {
+    const { data, loading } = await this.context.client.query({
+      query: NAVBAR__QUERY,
+    });
+    this.setState({
+      categories: data.categories,
+      currencies: data.currencies,
+      loading,
+    });
+  }
+
   render() {
-    return (
+    return this.state.loading ? (
+      <LoadingNavBar />
+    ) : (
       <StyledNav className="container">
         <ul className="nav--links">
-          {categoryList.map((category) => {
+          {this.state.categories?.map((category: Category) => {
             return (
-              <li key={String(category.id)}>
+              <li key={String(category.name)}>
                 <Link className="nav-link" to={`/${category.name}`}>
                   {category.name}
                 </Link>
@@ -83,7 +125,12 @@ class NavBar extends Component {
           <Logo />
         </div>
         <div className="nav--buttons">
-          <button className="nav-button dropdown">$</button>
+          <button
+            className="nav-button dropdown"
+            title={this.state.currencies?.[0].label}
+          >
+            {this.state.currencies?.[0].symbol}
+          </button>
           <button className="nav-button">
             <CartIcon />
           </button>
@@ -94,3 +141,22 @@ class NavBar extends Component {
 }
 
 export default NavBar;
+
+class LoadingNavBar extends Component {
+  render() {
+    return (
+      <StyledNav className="container">
+        <ul className="nav--links">
+          <Loading max-width="200px" />
+        </ul>
+        <div className="nav--logo-container">
+          <Logo />
+        </div>
+        <div className="nav--buttons">
+          <Loading width="50px" spacer="5px" />
+          <Loading width="50px" spacer="5px" />
+        </div>
+      </StyledNav>
+    );
+  }
+}
