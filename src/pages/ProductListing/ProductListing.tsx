@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import { Component } from "react";
 import ProductCard from "./components/ProductCard";
-import { products } from "../../mockData";
 import { withRouter, WithRouterProps } from "../../utils/withRouter";
-import { Product } from "../../types";
-import { NavigateFunction } from "react-router-dom";
+import { ListingProduct } from "../../types";
+import { PRODUCT__LISTING__QUERY } from "../../graphql/queries";
+import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 
 const ProductListingStlyed = styled.div`
   h2 {
@@ -20,24 +20,60 @@ const ProductGrid = styled.div`
   gap: 6rem;
 `;
 
-interface ProductListingParams {
+interface ProductListingRouterParams {
   category: string;
-  navigate: NavigateFunction;
 }
+interface ProductListingExtraProps {}
+interface ProductListingState {
+  category: string | null;
+  products: ListingProduct[] | null;
+  loading: boolean;
+}
+type ProductListingProps = ProductListingExtraProps &
+  WithRouterProps<ProductListingRouterParams> &
+  WithClientProps;
+class ProductListing extends Component<
+  ProductListingProps,
+  ProductListingState
+> {
+  state: ProductListingState = {
+    category: null,
+    products: null,
+    loading: true,
+  };
 
-type ProductListingProps = WithRouterProps<ProductListingParams>;
+  getProducts = async (category: string) => {
+    const { data, loading } = await this.props.client.query({
+      query: PRODUCT__LISTING__QUERY,
+      variables: { categoryName: { title: category || "all" } }, //TODO: read defaultCategory from global state or query from graphql
+    });
+    this.setState({
+      products: data?.category?.products as ListingProduct[],
+      loading,
+    });
+  };
 
-class ProductListing extends Component<ProductListingProps> {
+  async componentDidMount() {
+    const { category } = this.props.match.params;
+    await this.getProducts(category);
+  }
+
+  async componentDidUpdate(prevProps: ProductListingProps) {
+    const { category: prevCategory } = prevProps.match.params;
+    const { category: newCategory } = this.props.match.params;
+    if (prevCategory === newCategory) {
+      return;
+    }
+    await this.getProducts(newCategory);
+  }
   render() {
     const { category } = this.props.match.params;
-    const currentProducts = category
-      ? products.categories[category as keyof typeof products.categories]
-      : products.categories.all;
+    const { products } = this.state;
     return (
       <ProductListingStlyed>
         <h2>{category}</h2>
         <ProductGrid>
-          {currentProducts.map((product: Product) => (
+          {products?.map((product: ListingProduct) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -52,4 +88,4 @@ class ProductListing extends Component<ProductListingProps> {
   }
 }
 
-export default withRouter(ProductListing);
+export default withClient(withRouter(ProductListing));

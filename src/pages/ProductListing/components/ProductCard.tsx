@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Component, MouseEventHandler } from "react";
 import { ReactComponent as CartIcon } from "../../../assets/empty_cart_white.svg";
-import { Price, Product } from "../../../types";
+import { ListingProduct, Price } from "../../../types";
 
 const Card = styled.div`
   width: 386px;
@@ -51,7 +51,7 @@ const CartButton = styled.button`
 `;
 
 type ProductCardProps = {
-  product: Product;
+  product: ListingProduct;
   handleClick: MouseEventHandler<HTMLDivElement>;
 };
 

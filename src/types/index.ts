@@ -52,3 +52,12 @@ export type CartItem = {
 export type Category = {
   name: string;
 };
+
+export type ListingProduct = {
+  id: string;
+  name: string;
+  inStock: boolean;
+  gallery: string[];
+  brand: string;
+  prices: Price[];
+};
