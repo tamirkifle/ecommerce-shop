@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { ReactComponent as CartIcon } from "../assets/empty_cart.svg";
-import { getApolloContext } from "@apollo/client";
 import { Category, Currency } from "../types";
 import Loading from "./Loading";
 import { NAVBAR__QUERY } from "../graphql/queries";
+import { withClient, WithClientProps } from "../graphql/withApolloClient";
 
 const StyledNav = styled.nav`
   text-transform: uppercase;
@@ -67,31 +67,35 @@ const StyledNav = styled.nav`
   }
 `;
 
-const ctx = getApolloContext();
-
-interface NavBarProps {}
+interface NavBarExtraProps {}
 interface NavBarState {
   categories: Category[] | null;
   currencies: Currency[] | null;
   loading: boolean;
 }
+type NavBarProps = NavBarExtraProps & WithClientProps;
 class NavBar extends Component<NavBarProps, NavBarState> {
-  static contextType = ctx;
   state: NavBarState = {
     categories: null,
     currencies: null,
     loading: true,
   };
 
-  async componentDidMount() {
-    const { data, loading } = await this.context.client.query({
-      query: NAVBAR__QUERY,
-    });
-    this.setState({
-      categories: data.categories,
-      currencies: data.currencies,
-      loading,
-    });
+  getNavData = async () => {
+    if (this.props.client) {
+      const { data, loading } = await this.props.client.query({
+        query: NAVBAR__QUERY,
+      });
+      this.setState({
+        categories: data?.categories,
+        currencies: data?.currencies,
+        loading,
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.getNavData();
   }
 
   render() {
@@ -129,8 +133,6 @@ class NavBar extends Component<NavBarProps, NavBarState> {
   }
 }
 
-export default NavBar;
-
 class LoadingNavBar extends Component {
   render() {
     return (
@@ -149,3 +151,5 @@ class LoadingNavBar extends Component {
     );
   }
 }
+
+export default withClient(NavBar);
