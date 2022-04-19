@@ -4,7 +4,15 @@ import ImageViewer from "../../components/ImageViewer";
 import { AttributeInput } from "../../components/AttributeRelated";
 import { products } from "../../mockData";
 import { withRouter, WithRouterProps } from "../../utils/withRouter";
-import { Product } from "../../types";
+import { Product, SelectedAttribute, SelectedAttributes } from "../../types";
+import { withStore, WithStoreProps } from "../../graphql/withStore";
+import { addToCart } from "../../store/actions";
+import { productToCartItem } from "../../utils/productToCartItem";
+import {
+  AlreadyInCartError,
+  NoAttribiuteError,
+  OutOfStockError,
+} from "../../store/errors";
 
 const ProductDescriptionStyled = styled.div`
   display: flex;
@@ -59,13 +67,16 @@ interface Params {
 
 type State = {
   currentProduct: Product | null;
-  selectedAttributes: object;
+  selectedAttributes: SelectedAttributes;
 };
 
-type Props = WithRouterProps<Params>;
+type Props = WithRouterProps<Params> & WithStoreProps;
 
 class ProductDescription extends Component<Props, State> {
-  state: State = { currentProduct: null, selectedAttributes: {} };
+  state: State = {
+    currentProduct: null,
+    selectedAttributes: new Map<string, SelectedAttribute>(),
+  };
   componentDidMount() {
     const { productId } = this.props.match.params;
     const product = products.categories.all.find(
@@ -76,7 +87,50 @@ class ProductDescription extends Component<Props, State> {
     }
   }
 
+  setSelectedAttributes = (selectedAttribute: SelectedAttribute) => {
+    this.setState((oldState) => {
+      const { selectedAttributes } = { ...oldState };
+      selectedAttributes.set(selectedAttribute.id, selectedAttribute);
+      return { ...oldState, selectedAttributes };
+    });
+  };
+
+  addToCart = () => {
+    if (this.state.currentProduct) {
+      //TODO: Remove with loading state
+      console.log("Adding to Cart...");
+
+      try {
+        for (const { id } of this.state.currentProduct.attributes) {
+          if (!this.state.selectedAttributes.get(id)) {
+            throw new NoAttribiuteError(
+              "Please select all item attributes before adding to cart."
+            );
+          }
+        }
+        const added = addToCart(
+          productToCartItem(
+            this.state.currentProduct,
+            new Map(this.state.selectedAttributes)
+          )
+        );
+        if (added) {
+          alert("Item successfully added to cart.");
+        }
+      } catch (e: any) {
+        if (
+          e instanceof NoAttribiuteError ||
+          OutOfStockError ||
+          AlreadyInCartError
+        ) {
+          alert(e.message);
+        }
+      }
+    }
+  };
+
   render() {
+    const { pageCurrency } = this.props.storeVar;
     if (this.state.currentProduct) {
       const { currentProduct } = this.state;
       return (
@@ -88,20 +142,29 @@ class ProductDescription extends Component<Props, State> {
               <h2 className="product-name">{currentProduct.name}</h2>
             </ProductTitle>
             {currentProduct.attributes.map((attribute) => (
-              <AttributeInput key={attribute.id} attribute={attribute} />
+              <AttributeInput
+                key={attribute.id}
+                attribute={attribute}
+                selectedAttribute={this.state.selectedAttributes?.get(
+                  attribute.id
+                )}
+                setSelectedAttributes={this.setSelectedAttributes}
+              />
             ))}
             <Price>
               <h4 className="section-title">Price: </h4>
               <p className="section-main">
-                $
+                {pageCurrency.symbol}
                 {
                   currentProduct.prices.find(
-                    (price) => price.currency.label === "USD"
+                    (price) => price.currency.label === pageCurrency.label
                   )?.amount
                 }
               </p>
             </Price>
-            <AddToCartButton>Add to Cart</AddToCartButton>
+            <AddToCartButton onClick={this.addToCart}>
+              Add to Cart
+            </AddToCartButton>
             <Description
               dangerouslySetInnerHTML={{
                 __html: currentProduct.description,
@@ -121,4 +184,4 @@ class ProductDescription extends Component<Props, State> {
   }
 }
 
-export default withRouter(ProductDescription);
+export default withStore(withRouter(ProductDescription));
