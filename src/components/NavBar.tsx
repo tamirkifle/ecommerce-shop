@@ -7,6 +7,8 @@ import { Category, Currency } from "../types";
 import Loading from "./Loading";
 import { NAVBAR__QUERY } from "../graphql/queries";
 import { withClient, WithClientProps } from "../graphql/withApolloClient";
+import { changeCurrency } from "../store/actions";
+import { withStore, WithStoreProps } from "../graphql/withStore";
 
 const StyledNav = styled.nav`
   text-transform: uppercase;
@@ -67,13 +69,14 @@ const StyledNav = styled.nav`
   }
 `;
 
-interface NavBarExtraProps {}
+interface NavBarOwnProps {}
 interface NavBarState {
   categories: Category[] | null;
   currencies: Currency[] | null;
   loading: boolean;
 }
-type NavBarProps = NavBarExtraProps & WithClientProps;
+
+type NavBarProps = NavBarOwnProps & WithClientProps & WithStoreProps;
 class NavBar extends Component<NavBarProps, NavBarState> {
   state: NavBarState = {
     categories: null,
@@ -99,6 +102,8 @@ class NavBar extends Component<NavBarProps, NavBarState> {
   }
 
   render() {
+    const { pageCurrency } = this.props.storeVar;
+
     return this.state.loading ? (
       <LoadingNavBar />
     ) : (
@@ -120,13 +125,23 @@ class NavBar extends Component<NavBarProps, NavBarState> {
         <div className="nav--buttons">
           <button
             className="nav-button dropdown"
-            title={this.state.currencies?.[0].label}
+            title={pageCurrency.label}
+            onClick={() => {
+              if (!this.state.currencies) {
+                return;
+              }
+              changeCurrency(
+                this.state.currencies[
+                  Math.floor(Math.random() * this.state.currencies.length)
+                ]
+              );
+            }}
           >
-            {this.state.currencies?.[0].symbol}
+            {pageCurrency.symbol}
           </button>
-          <button className="nav-button">
+          <Link className="nav-button" to="/cart">
             <CartIcon />
-          </button>
+          </Link>
         </div>
       </StyledNav>
     );
@@ -152,4 +167,4 @@ class LoadingNavBar extends Component {
   }
 }
 
-export default withClient(NavBar);
+export default withStore(withClient(NavBar));
