@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 import { Component } from "react";
-import { products } from "../../mockData";
 import { AttributeViewer } from "../../components/AttributeRelated";
-import { CartItem } from "../../types";
 import MiniImageSlider from "../../components/MiniImageSlider";
 import { Link } from "react-router-dom";
 import QuantityCounter from "../../components/QuantityCounter";
+import { withStore, WithStoreProps } from "../../graphql/withStore";
+import { setQuantity } from "../../store/actions";
 
 const CartStyled = styled.div`
   max-width: 1200px;
@@ -53,74 +53,21 @@ const NoCartItems = styled.div`
     font-weight: 600;
   }
 `;
-interface CartProps {}
+interface CartOwnProps {}
 
-interface CartState {
-  cartItems: CartItem[];
-}
+interface CartState {}
 
+type CartProps = CartOwnProps & WithStoreProps;
 class Cart extends Component<CartProps, CartState> {
-  state = {
-    //placeholder, will be replaced by data from global state
-    cartItems: products.categories.all.slice(0, 3).map(
-      (product) =>
-        ({
-          id: product.id,
-          brand: product.brand,
-          name: product.name,
-          prices: product.prices,
-          gallery: product.gallery,
-          quantity: 1,
-          selectedAttributes: product.attributes.map((attribute) => ({
-            id: attribute.id,
-            name: attribute.name,
-            type: attribute.type,
-            item: attribute.items[0],
-          })),
-        } as CartItem)
-    ),
-  };
-
-  setQuantity = (itemId: string, newQuantity: number) => {
-    if (newQuantity === 0) {
-      //TODO: Replace Confirm with Modal
-      if (
-        // eslint-disable-next-line no-restricted-globals
-        confirm(`Are you sure you want to remove the item from your cart?
-      `)
-      ) {
-        //remove the item if quantity is one
-        this.setState((oldState) => {
-          const newState = { ...oldState };
-          const itemIndex = newState.cartItems.findIndex(
-            (cartItem) => cartItem.id === itemId
-          );
-          if (itemIndex !== -1) {
-            newState.cartItems.splice(itemIndex, 1);
-          }
-          return newState;
-        });
-      }
-      return;
-    }
-    this.setState((oldState) => {
-      const newState = { ...oldState };
-      const itemIndex = newState.cartItems.findIndex(
-        (cartItem) => cartItem.id === itemId
-      );
-      newState.cartItems[itemIndex].quantity = newQuantity;
-      return newState;
-    });
-  };
-
   render() {
-    const cartHasItems = this.state.cartItems.length > 0;
+    const { pageCurrency, cartItems } = this.props.storeVar;
+    const cartHasItems = cartItems.length > 0;
     return (
       <CartStyled>
         <h1 className="page-title">Cart</h1>
         {cartHasItems ? (
           <>
-            {this.state.cartItems.map((item) => (
+            {cartItems.map((item) => (
               <CartItemStyled key={item.id}>
                 <div className="flow-content">
                   <ProductTitle className="flow-content">
@@ -128,23 +75,26 @@ class Cart extends Component<CartProps, CartState> {
                     <h3 className="product-name">{item.name}</h3>
                   </ProductTitle>
                   <Price>
-                    $
+                    {pageCurrency.symbol}
                     {(item.prices.find(
-                      (price) => price.currency.label === "USD"
+                      (price) => price.currency.label === pageCurrency.label
                     )?.amount || 0) * item.quantity}
                   </Price>
-                  {item.selectedAttributes.map((attribute) => (
-                    <AttributeViewer key={attribute.id} attribute={attribute} />
+                  {item.selectedAttributes.forEach((sAttribute) => (
+                    <AttributeViewer
+                      key={sAttribute.id}
+                      selectedAttribute={sAttribute}
+                    />
                   ))}
                 </div>
                 <div className="split align-center">
                   <QuantityCounter
                     quantity={item.quantity}
                     increaseQuantity={() =>
-                      this.setQuantity(item.id, item.quantity + 1)
+                      setQuantity(item.id, item.quantity + 1)
                     }
                     decreaseQuantity={() =>
-                      this.setQuantity(item.id, item.quantity - 1)
+                      setQuantity(item.id, item.quantity - 1)
                     }
                   />
                   <MiniImageSlider gallery={item.gallery} />
@@ -154,15 +104,18 @@ class Cart extends Component<CartProps, CartState> {
             <CartItemStyled>
               <h2 className="total">Total: </h2>
               <Price>
-                $
-                {this.state.cartItems.reduce((acc, item) => {
-                  return (
-                    acc +
-                    (item.prices.find((price) => price.currency.label === "USD")
-                      ?.amount || 0) *
-                      item.quantity
-                  );
-                }, 0)}
+                {pageCurrency.symbol}
+                {Math.round(
+                  cartItems.reduce((acc, item) => {
+                    return (
+                      acc +
+                      (item.prices.find(
+                        (price) => price.currency.label === pageCurrency.label
+                      )?.amount || 0) *
+                        item.quantity
+                    );
+                  }, 0) * 100
+                ) / 100}
               </Price>
             </CartItemStyled>
           </>
@@ -179,4 +132,4 @@ class Cart extends Component<CartProps, CartState> {
   }
 }
 
-export default Cart;
+export default withStore(Cart);
