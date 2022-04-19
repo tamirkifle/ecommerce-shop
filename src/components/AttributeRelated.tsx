@@ -47,32 +47,25 @@ const AttributeItemStyled = styled.button`
 
 interface AttributeInputProps {
   attribute: Attribute;
+  selectedAttribute: SelectedAttribute | undefined;
+  setSelectedAttributes: (selectedAttribute: SelectedAttribute) => void;
 }
 
-interface AttributeInputState {
-  selectedAttributes: object;
-}
+interface AttributeInputState {}
 
 export class AttributeInput extends Component<
   AttributeInputProps,
   AttributeInputState
 > {
-  state: AttributeInputState = {
-    selectedAttributes: {},
-  };
-  selectAttribute = (attributeName: string, selectedValue: string) => {
-    console.log(this.state.selectedAttributes);
+  selectAttribute = (attributeItem: AttributeItem) => {
     //TODO: Attribute and Item Type Definition
-    this.setState((oldState) => {
-      const newAttributes = {};
-      (newAttributes as any)[attributeName] = selectedValue;
-      return {
-        selectedAttributes: {
-          ...oldState.selectedAttributes,
-          ...newAttributes,
-        },
-      };
-    });
+    const selectedAttribute: SelectedAttribute = {
+      id: this.props.attribute.id,
+      name: this.props.attribute.name,
+      type: this.props.attribute.type,
+      item: attributeItem,
+    };
+    this.props.setSelectedAttributes(selectedAttribute);
   };
 
   render() {
@@ -87,11 +80,7 @@ export class AttributeInput extends Component<
               attribute={attribute}
               attributeItem={item}
               selectAttribute={this.selectAttribute}
-              isSelected={
-                (this.state.selectedAttributes as any)[
-                  this.props.attribute.name
-                ] === item.value
-              }
+              isSelected={this.props.selectedAttribute?.item.id === item.id}
             />
           ))}
         </Chooser>
@@ -103,7 +92,7 @@ export class AttributeInput extends Component<
 interface AttributeOptionProps {
   attribute: Attribute | SelectedAttribute;
   attributeItem: AttributeItem;
-  selectAttribute?: (attributeName: string, attributeItemValue: string) => void;
+  selectAttribute?: (attributeItem: AttributeItem) => void; //Not passed in cart to create a display-only, non-interactable attribute option
   isSelected: boolean;
 }
 export class AttributeOption extends Component<AttributeOptionProps> {
@@ -111,11 +100,7 @@ export class AttributeOption extends Component<AttributeOptionProps> {
     return (
       <AttributeItemStyled
         onClick={() => {
-          this.props.selectAttribute &&
-            this.props.selectAttribute(
-              this.props.attribute.name,
-              this.props.attributeItem.value
-            );
+          this.props.selectAttribute?.(this.props.attributeItem);
         }}
         className={`${this.props.isSelected ? "selected" : ""} ${
           this.props.selectAttribute ? "clickable" : ""
@@ -135,17 +120,17 @@ export class AttributeOption extends Component<AttributeOptionProps> {
 }
 
 interface AttributeViewerProps {
-  attribute: SelectedAttribute;
+  selectedAttribute: SelectedAttribute;
 }
 export class AttributeViewer extends Component<AttributeViewerProps> {
   render() {
     return (
       <AttributeInputStyled className="flow-content">
-        <h4 className="section-title">{this.props.attribute.name}:</h4>
+        <h4 className="section-title">{this.props.selectedAttribute.name}:</h4>
         <AttributeOption
-          key={this.props.attribute.id}
-          attribute={this.props.attribute}
-          attributeItem={this.props.attribute.item}
+          key={this.props.selectedAttribute.id}
+          attribute={this.props.selectedAttribute}
+          attributeItem={this.props.selectedAttribute.item}
           isSelected={true}
         />
       </AttributeInputStyled>

@@ -31,22 +31,23 @@ export type Price = {
   currency: Currency;
   amount: number;
 };
-
 export type SelectedAttribute = {
   id: string;
   name: string;
   type: string;
   item: AttributeItem;
 };
+export type SelectedAttributes = Map<string, SelectedAttribute>;
 
 export type CartItem = {
   id: string;
   brand: string;
   name: string;
+  inStock: boolean;
   quantity: number;
   gallery: string[];
   prices: Price[];
-  selectedAttributes: SelectedAttribute[];
+  selectedAttributes: SelectedAttributes;
 };
 
 export type Category = {
@@ -55,9 +56,9 @@ export type Category = {
 
 export type ListingProduct = {
   id: string;
+  brand: string;
   name: string;
   inStock: boolean;
   gallery: string[];
-  brand: string;
   prices: Price[];
 };
