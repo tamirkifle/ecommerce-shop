@@ -76,3 +76,29 @@ export const setQuantity = (itemId: string, newQuantity: number) => {
   newStore.cartItems[itemIndex].quantity = newQuantity;
   return globalStore(newStore);
 };
+
+export const toggleCurrencySwitcher = () => {
+  const oldState = globalStore();
+  return globalStore({
+    ...oldState,
+    isMiniCartOpen: false,
+    isCurrencySwitcherOpen: !oldState.isCurrencySwitcherOpen,
+  });
+};
+export const toggleMiniCart = () => {
+  const oldState = globalStore();
+  return globalStore({
+    ...oldState,
+    isCurrencySwitcherOpen: false,
+    isMiniCartOpen: !oldState.isMiniCartOpen,
+  });
+};
+
+export const closeDropdowns = () => {
+  const oldState = globalStore();
+  return globalStore({
+    ...oldState,
+    isCurrencySwitcherOpen: false,
+    isMiniCartOpen: false,
+  });
+};

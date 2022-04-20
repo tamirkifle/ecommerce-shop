@@ -5,6 +5,8 @@ const initialState: GlobalStoreType = {
   pageCurrency: { label: "GBP", symbol: "£" },
   defaultCategory: "all",
   cartItems: [],
+  isCurrencySwitcherOpen: false,
+  isMiniCartOpen: false,
 };
 
 const store = makeVar(initialState);
