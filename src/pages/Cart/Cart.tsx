@@ -41,11 +41,17 @@ const CartItemStyled = styled.div`
   }
 `;
 
+const QtyImageContainer = styled.div`
+  max-height: 170px;
+`;
+
 const Price = styled.p`
   font-size: 1.25rem;
   font-weight: 700;
 `;
-
+const ProductInfo = styled.div`
+  --flow-spacer: 1.5rem;
+`;
 const NoCartItems = styled.div`
   --flow-spacer: 2rem;
   p {
@@ -69,27 +75,33 @@ class Cart extends Component<CartProps, CartState> {
           <>
             {cartItems.map((item) => (
               <CartItemStyled key={item.id}>
-                <div className="flow-content">
+                <ProductInfo className="flow-content">
                   <ProductTitle className="flow-content">
                     <h3 className="product-brand">{item.brand}</h3>
                     <h3 className="product-name">{item.name}</h3>
                   </ProductTitle>
                   <Price>
                     {pageCurrency.symbol}
-                    {(item.prices.find(
-                      (price) => price.currency.label === pageCurrency.label
-                    )?.amount || 0) * item.quantity}
+                    {Math.round(
+                      (item.prices.find(
+                        (price) => price.currency.label === pageCurrency.label
+                      )?.amount || 0) *
+                        item.quantity *
+                        100
+                    ) / 100}
                   </Price>
-                  {Array.from(item.selectedAttributes.values()).map(
-                    (sAttribute) => (
-                      <AttributeViewer
-                        key={sAttribute.id}
-                        selectedAttribute={sAttribute}
-                      />
-                    )
-                  )}
-                </div>
-                <div className="split align-center">
+                  <div>
+                    {Array.from(item.selectedAttributes.values()).map(
+                      (sAttribute) => (
+                        <AttributeViewer
+                          key={sAttribute.id}
+                          selectedAttribute={sAttribute}
+                        />
+                      )
+                    )}
+                  </div>
+                </ProductInfo>
+                <QtyImageContainer className="split">
                   <QuantityCounter
                     quantity={item.quantity}
                     increaseQuantity={() =>
@@ -98,9 +110,15 @@ class Cart extends Component<CartProps, CartState> {
                     decreaseQuantity={() =>
                       setQuantity(item.id, item.quantity - 1)
                     }
+                    btnStyle={{
+                      fontSize: "1rem",
+                      padding: "0",
+                      minWidth: "45px",
+                      minHeight: "45px",
+                    }}
                   />
                   <MiniImageSlider gallery={item.gallery} />
-                </div>
+                </QtyImageContainer>
               </CartItemStyled>
             ))}
             <CartItemStyled>
