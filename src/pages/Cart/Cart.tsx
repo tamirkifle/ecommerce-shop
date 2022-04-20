@@ -80,12 +80,14 @@ class Cart extends Component<CartProps, CartState> {
                       (price) => price.currency.label === pageCurrency.label
                     )?.amount || 0) * item.quantity}
                   </Price>
-                  {item.selectedAttributes.forEach((sAttribute) => (
-                    <AttributeViewer
-                      key={sAttribute.id}
-                      selectedAttribute={sAttribute}
-                    />
-                  ))}
+                  {Array.from(item.selectedAttributes.values()).map(
+                    (sAttribute) => (
+                      <AttributeViewer
+                        key={sAttribute.id}
+                        selectedAttribute={sAttribute}
+                      />
+                    )
+                  )}
                 </div>
                 <div className="split align-center">
                   <QuantityCounter
