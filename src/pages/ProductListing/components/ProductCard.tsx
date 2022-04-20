@@ -30,7 +30,7 @@ const Card = styled.div`
   }
 
   &:hover {
-    box-shadow: var(--bs, 0px 4px 35px rgba(168, 172, 176, 0.19));
+    box-shadow: var(--bs);
     cursor: pointer;
     & > .showOnHover {
       display: block;

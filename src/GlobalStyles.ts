@@ -16,6 +16,7 @@ const GlobalStyles = css`
       "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
       "Helvetica Neue", sans-serif;
     --nav-height: 80px;
+    --bs: 0px 4px 35px rgba(168, 172, 176, 0.19);
   }
 
   /* RESETS */
