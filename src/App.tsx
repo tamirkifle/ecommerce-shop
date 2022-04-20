@@ -18,9 +18,7 @@ function App() {
       <Router>
         <Global styles={GlobalStyles} />
         <ScrollToTop />
-        <header>
-          <NavBar />
-        </header>
+        <NavBar />
         <MainContent className="container">
           <Routes>
             <Route path="/" element={<ProductListing />} />

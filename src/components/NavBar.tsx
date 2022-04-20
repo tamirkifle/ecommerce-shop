@@ -7,9 +7,15 @@ import { Category, Currency } from "../types";
 import Loading from "./Loading";
 import { NAVBAR__QUERY } from "../graphql/queries";
 import { withClient, WithClientProps } from "../graphql/withApolloClient";
-import { changeCurrency } from "../store/actions";
 import { withStore, WithStoreProps } from "../graphql/withStore";
+import CurrencyDropdown from "./CurrencyDropdown";
+import { closeDropdowns } from "../store/actions";
 
+const Header = styled.header`
+  position: relative;
+  z-index: 2;
+  background-color: white;
+`;
 const StyledNav = styled.nav`
   text-transform: uppercase;
   height: var(--nav-height, 80px);
@@ -60,12 +66,14 @@ const StyledNav = styled.nav`
     font-size: 1.25rem;
     line-height: 0;
     height: 100%;
+    display: flex;
+    align-items: center;
   }
 
   .dropdown::after {
     content: "\u2304";
     margin-left: 10px;
-    vertical-align: 3px;
+    margin-bottom: 5px;
   }
 `;
 
@@ -100,50 +108,39 @@ class NavBar extends Component<NavBarProps, NavBarState> {
   componentDidMount() {
     this.getNavData();
   }
-
   render() {
-    const { pageCurrency } = this.props.storeVar;
-
     return this.state.loading ? (
       <LoadingNavBar />
     ) : (
-      <StyledNav className="container">
-        <ul className="nav--links">
-          {this.state.categories?.map((category: Category) => {
-            return (
-              <li key={String(category.name)}>
-                <Link className="nav-link" to={`/${category.name}`}>
-                  {category.name}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="nav--logo-container">
-          <Logo />
-        </div>
-        <div className="nav--buttons">
-          <button
-            className="nav-button dropdown"
-            title={pageCurrency.label}
-            onClick={() => {
-              if (!this.state.currencies) {
-                return;
-              }
-              changeCurrency(
-                this.state.currencies[
-                  Math.floor(Math.random() * this.state.currencies.length)
-                ]
+      <Header>
+        <StyledNav className="container">
+          <ul className="nav--links">
+            {this.state.categories?.map((category: Category) => {
+              return (
+                <li key={String(category.name)}>
+                  <Link
+                    className="nav-link"
+                    to={`/${category.name}`}
+                    onClick={() => closeDropdowns()}
+                  >
+                    {category.name}
+                  </Link>
+                </li>
               );
-            }}
-          >
-            {pageCurrency.symbol}
-          </button>
-          <Link className="nav-button" to="/cart">
-            <CartIcon />
-          </Link>
-        </div>
-      </StyledNav>
+            })}
+          </ul>
+          <div className="nav--logo-container">
+            <Logo />
+          </div>
+          <div className="nav--buttons">
+            <CurrencyDropdown currencies={this.state.currencies} />
+
+            <Link className="nav-button" to="/cart">
+              <CartIcon />
+            </Link>
+          </div>
+        </StyledNav>
+      </Header>
     );
   }
 }
