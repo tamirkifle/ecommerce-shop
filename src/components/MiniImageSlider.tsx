@@ -32,6 +32,7 @@ const SliderButton = styled.button<SliderButtonProps>`
 
 interface MiniImageSliderProps {
   gallery: string[];
+  style?: React.CSSProperties;
 }
 
 interface MiniImageSliderState {
@@ -46,7 +47,7 @@ class MiniImageSlider extends Component<
 
   render() {
     return (
-      <ViewerContainerStyled>
+      <ViewerContainerStyled style={this.props.style}>
         {this.props.gallery.length > 1 && (
           <SliderButton
             direction="left"
