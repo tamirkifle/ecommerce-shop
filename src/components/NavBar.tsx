@@ -2,13 +2,13 @@ import { Component } from "react";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as Logo } from "../assets/logo.svg";
-import { ReactComponent as CartIcon } from "../assets/empty_cart.svg";
 import { Category, Currency } from "../types";
 import Loading from "./Loading";
 import { NAVBAR__QUERY } from "../graphql/queries";
 import { withClient, WithClientProps } from "../graphql/withApolloClient";
 import { withStore, WithStoreProps } from "../graphql/withStore";
 import CurrencyDropdown from "./CurrencyDropdown";
+import MiniCartDropdown from "./MiniCartDropdown";
 import { closeDropdowns } from "../store/actions";
 
 const Header = styled.header`
@@ -17,7 +17,6 @@ const Header = styled.header`
   background-color: white;
 `;
 const StyledNav = styled.nav`
-  text-transform: uppercase;
   height: var(--nav-height, 80px);
   display: flex;
 
@@ -38,6 +37,7 @@ const StyledNav = styled.nav`
 
   /* Nav Links */
   .nav-link {
+    text-transform: uppercase;
     display: inline-block;
     padding: 1rem;
     height: var(--nav-height, 80px);
@@ -134,10 +134,7 @@ class NavBar extends Component<NavBarProps, NavBarState> {
           </div>
           <div className="nav--buttons">
             <CurrencyDropdown currencies={this.state.currencies} />
-
-            <Link className="nav-button" to="/cart">
-              <CartIcon />
-            </Link>
+            <MiniCartDropdown />
           </div>
         </StyledNav>
       </Header>
