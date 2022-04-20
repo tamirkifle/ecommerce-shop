@@ -53,7 +53,9 @@ export default class Loading extends Component<LoadingProps> {
         max-width={this.props["max-width"]}
       >
         {this.props.widths ? (
-          this.props.widths.map((width) => <AnimatedBg width={width} />)
+          this.props.widths.map((width, index) => (
+            <AnimatedBg key={String(width) + index} width={width} />
+          ))
         ) : (
           <>
             <AnimatedBg />
