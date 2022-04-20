@@ -87,8 +87,17 @@ const GlobalStyles = css`
   .justify-center {
     justify-content: center;
   }
+  .justify-stretch {
+    & > * {
+      flex-basis: 100%;
+    }
+  }
   .align-center {
     align-items: center;
+  }
+
+  .space-between {
+    justify-content: space-between;
   }
 
   .btn {
@@ -96,12 +105,19 @@ const GlobalStyles = css`
     padding: 0.5rem 1rem;
     text-decoration: none;
     color: var(--dark, black);
+    font-weight: 600;
+    font-size: 14px;
     border: 1px solid var(--dark, black);
   }
 
   .accent {
     color: white;
+    border: none;
     background-color: var(--accent);
+  }
+
+  .bold {
+    font-weight: 700;
   }
 `;
 
