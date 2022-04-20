@@ -72,7 +72,7 @@ class CurrencyDropdown extends Component<
         <Dropdown
           isOpen={isCurrencySwitcherOpen}
           onClose={closeDropdowns}
-          top={"calc(100% - 15px)"}
+          style={{ left: "0", top: "calc(100% - 15px)", textAlign: "center" }}
         >
           {this.props.currencies?.map((currency) => (
             <CurrencyButton

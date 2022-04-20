@@ -8,11 +8,9 @@ interface DropdownStyledProps {
 }
 const DropdownStyled = styled.div<DropdownStyledProps>`
   position: absolute;
-  top: ${(p) => p.top || "100%"};
-  left: 0;
+  top: 100%;
   z-index: 1;
   box-shadow: var(--bs);
-  text-align: center;
   background-color: white;
   display: ${(p) => (p.isOpen ? "inline-block" : "none")};
   min-width: 150px;
@@ -20,8 +18,9 @@ const DropdownStyled = styled.div<DropdownStyledProps>`
 interface DropdownProps {
   isOpen: boolean;
   onClose: () => void;
-  overlayConfig?: { opacity: string; bgColor: string };
+  overlayConfig?: { opacity?: string; bgColor?: string };
   top?: string;
+  style?: React.CSSProperties;
 }
 
 interface DropdownState {}
@@ -31,7 +30,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
     return (
       this.props.isOpen && (
         <>
-          <DropdownStyled isOpen={this.props.isOpen} top={this.props.top}>
+          <DropdownStyled isOpen={this.props.isOpen} style={this.props.style}>
             {this.props.children}
           </DropdownStyled>
           {
