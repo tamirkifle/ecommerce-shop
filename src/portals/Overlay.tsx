@@ -3,23 +3,22 @@ import { Component } from "react";
 import ReactDOM from "react-dom";
 
 interface OverlayStyledProps {
-  opacity?: string;
+  zIndex?: string;
   bgColor?: string;
 }
 const OverlayStyled = styled.div<OverlayStyledProps>`
   position: fixed;
   top: 0;
-  z-index: 1;
+  z-index: ${(p) => p.zIndex || "1"};
   width: 100vw;
   height: 100vh;
   background-color: ${(p) => (p.bgColor ? p.bgColor : "transparent")};
-  opacity: ${(p) => (p.opacity ? p.opacity : "100%")};
 `;
 
 interface OverlayProps {
-  opacity?: string;
   bgColor?: string;
-  onClick: () => void;
+  zIndex?: string;
+  onClick?: () => void;
 }
 
 interface OverlayState {}
@@ -27,8 +26,8 @@ export default class Overlay extends Component<OverlayProps, OverlayState> {
   render() {
     return ReactDOM.createPortal(
       <OverlayStyled
-        opacity={this.props.opacity}
         bgColor={this.props.bgColor}
+        zIndex={this.props.zIndex}
         onClick={this.props.onClick}
       />,
       document.getElementById("overlay") as HTMLElement
