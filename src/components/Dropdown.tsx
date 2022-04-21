@@ -33,12 +33,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           <DropdownStyled isOpen={this.props.isOpen} style={this.props.style}>
             {this.props.children}
           </DropdownStyled>
-          {
-            <Overlay
-              onClick={() => this.props.onClose()}
-              {...this.props.overlayConfig}
-            />
-          }
+          <Overlay onClick={this.props.onClose} {...this.props.overlayConfig} />
         </>
       )
     );
