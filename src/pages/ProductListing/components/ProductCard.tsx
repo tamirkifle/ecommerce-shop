@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import { Component, MouseEventHandler } from "react";
 import { ReactComponent as CartIcon } from "../../../assets/empty_cart_white.svg";
 import { Product, Price } from "../../../types";
+import { renderAttributeModal } from "../../../store/modalBuilders";
+import { addToCart } from "../../../store/actions";
 
 const Card = styled.div`
   --card-image-height: 330px;
@@ -128,10 +130,14 @@ class ProductCard extends Component<ProductCardProps> {
 
         <CartButton
           className={this.props.product.inStock ? "showOnHover" : ""}
-          // onClick={(e) => {
-          //   e.stopPropagation();
-          //   console.log("Adding To Cart...");
-          // }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (this.props.product.attributes.length > 0) {
+              renderAttributeModal(this.props.product);
+            } else {
+              addToCart(this.props.product, new Map());
+            }
+          }}
         >
           <CartIcon />
         </CartButton>
