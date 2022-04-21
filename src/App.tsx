@@ -7,6 +7,7 @@ import styled from "@emotion/styled";
 import GlobalStyles from "./GlobalStyles";
 import client from "./apolloClient";
 import { ApolloProvider } from "@apollo/client";
+import Modal from "./portals/Modal";
 
 const MainContent = styled.main`
   margin: 5rem auto;
@@ -30,6 +31,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
           </Routes>
         </MainContent>
+        <Modal />
       </Router>
     </ApolloProvider>
   );

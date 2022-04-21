@@ -7,6 +7,8 @@ const initialState: GlobalStoreType = {
   cartItems: [],
   isCurrencySwitcherOpen: false,
   isMiniCartOpen: false,
+  showModal: false,
+  ModalChildren: null,
 };
 
 const store = makeVar(initialState);

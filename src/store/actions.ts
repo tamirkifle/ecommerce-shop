@@ -102,3 +102,25 @@ export const closeDropdowns = () => {
     isMiniCartOpen: false,
   });
 };
+export const showModal = () => {
+  const oldState = globalStore();
+  return globalStore({
+    ...oldState,
+    showModal: true,
+  });
+};
+export const closeModal = () => {
+  const oldState = globalStore();
+  return globalStore({
+    ...oldState,
+    showModal: false,
+  });
+};
+export const renderInModal = (children: React.ReactNode) => {
+  const oldState = globalStore();
+  return globalStore({
+    ...oldState,
+    showModal: true,
+    ModalChildren: children,
+  });
+};

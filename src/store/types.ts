@@ -6,4 +6,6 @@ export type GlobalStoreType = {
   cartItems: CartItem[];
   isCurrencySwitcherOpen: boolean;
   isMiniCartOpen: boolean;
+  showModal: boolean;
+  ModalChildren: React.ReactNode;
 };
