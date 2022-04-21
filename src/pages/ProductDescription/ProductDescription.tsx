@@ -8,6 +8,7 @@ import { withStore, WithStoreProps } from "../../graphql/withStore";
 import { addToCart } from "../../store/actions";
 import { PRODUCT__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
+import { PageTitle } from "../../components/commonStyles";
 
 const ProductDescriptionStyled = styled.div`
   display: flex;
@@ -140,65 +141,60 @@ class ProductDescription extends Component<
 
   render() {
     const { pageCurrency } = this.props.storeVar;
-    if (this.state.currentProduct) {
-      const { currentProduct } = this.state;
-      return (
-        <ProductDescriptionStyled className="flow-content">
-          <ImageViewer images={currentProduct.gallery} />
-          <ProductDetails>
-            <ProductTitle>
-              <h2 className="product-brand">{currentProduct.brand}</h2>
-              <h2 className="product-name">{currentProduct.name}</h2>
-            </ProductTitle>
-            {currentProduct.attributes.map((attribute) => (
-              <AttributeInput
-                key={attribute.id}
-                attribute={attribute}
-                selectedAttribute={this.state.selectedAttributes?.get(
-                  attribute.id
-                )}
-                setSelectedAttributes={this.setSelectedAttributes}
-              />
-            ))}
-            <Price>
-              <h4 className="section-title">Price: </h4>
-              <p className="section-main">
-                {pageCurrency.symbol}
-                {
-                  currentProduct.prices.find(
-                    (price) => price.currency.label === pageCurrency.label
-                  )?.amount
-                }
-              </p>
-            </Price>
-            <AddToCartButton
-              onClick={() =>
-                this.state.currentProduct?.inStock && this.addToCart()
+
+    return this.state.currentProduct ? (
+      <ProductDescriptionStyled className="flow-content">
+        <ImageViewer images={this.state.currentProduct.gallery} />
+        <ProductDetails>
+          <ProductTitle>
+            <h2 className="product-brand">{this.state.currentProduct.brand}</h2>
+            <h2 className="product-name">{this.state.currentProduct.name}</h2>
+          </ProductTitle>
+          {this.state.currentProduct.attributes.map((attribute) => (
+            <AttributeInput
+              key={attribute.id}
+              attribute={attribute}
+              selectedAttribute={this.state.selectedAttributes?.get(
+                attribute.id
+              )}
+              setSelectedAttributes={this.setSelectedAttributes}
+            />
+          ))}
+          <Price>
+            <h4 className="section-title">Price: </h4>
+            <p className="section-main">
+              {pageCurrency.symbol}
+              {
+                this.state.currentProduct.prices.find(
+                  (price) => price.currency.label === pageCurrency.label
+                )?.amount
               }
-              disabled={
-                this.state.currentProduct && !this.state.currentProduct.inStock
-              }
-            >
-              {this.state.currentProduct?.inStock
-                ? "Add to Cart"
-                : "Out of Stock"}
-            </AddToCartButton>
-            <Description
-              dangerouslySetInnerHTML={{
-                __html: currentProduct.description,
-              }}
-            ></Description>
-          </ProductDetails>
-        </ProductDescriptionStyled>
-      );
-    } else {
-      //TO-DO: Better Product Not Found Dialog
-      return (
-        <ProductDescriptionStyled className="container">
-          <div>Product Not Found</div>
-        </ProductDescriptionStyled>
-      );
-    }
+            </p>
+          </Price>
+          <AddToCartButton
+            onClick={() =>
+              this.state.currentProduct?.inStock && this.addToCart()
+            }
+            disabled={
+              this.state.currentProduct && !this.state.currentProduct.inStock
+            }
+          >
+            {this.state.currentProduct?.inStock
+              ? "Add to Cart"
+              : "Out of Stock"}
+          </AddToCartButton>
+          <Description
+            dangerouslySetInnerHTML={{
+              __html: this.state.currentProduct.description,
+            }}
+          ></Description>
+        </ProductDetails>
+      </ProductDescriptionStyled>
+    ) : this.state.loading ? (
+      <PageTitle>Loading</PageTitle>
+    ) : (
+      <PageTitle>Product Not Found</PageTitle>
+    );
   }
 }
 

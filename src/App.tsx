@@ -8,6 +8,7 @@ import GlobalStyles from "./GlobalStyles";
 import client from "./apolloClient";
 import { ApolloProvider } from "@apollo/client";
 import Modal from "./portals/Modal";
+import { PageTitle } from "./components/commonStyles";
 
 const MainContent = styled.main`
   margin: 5rem auto;
@@ -29,6 +30,10 @@ function App() {
               element={<ProductDescription />}
             />
             <Route path="/cart" element={<Cart />} />
+            <Route
+              path="*"
+              element={<PageTitle>404: Page Not Found</PageTitle>}
+            />
           </Routes>
         </MainContent>
         <Modal />

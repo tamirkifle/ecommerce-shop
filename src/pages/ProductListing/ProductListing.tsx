@@ -5,15 +5,8 @@ import { withRouter, WithRouterProps } from "../../utils/withRouter";
 import { Product } from "../../types";
 import { PRODUCTS__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
+import { PageTitle } from "../../components/commonStyles";
 
-const ProductListingStlyed = styled.div`
-  h2 {
-    text-transform: capitalize;
-    margin-bottom: 5rem;
-    font-weight: 400;
-    font-size: 2.5rem;
-  }
-`;
 const ProductGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -25,7 +18,6 @@ interface ProductListingRouterParams {
 }
 interface ProductListingExtraProps {}
 interface ProductListingState {
-  category: string | null;
   products: Product[] | null;
   loading: boolean;
 }
@@ -37,7 +29,6 @@ class ProductListing extends Component<
   ProductListingState
 > {
   state: ProductListingState = {
-    category: null,
     products: null,
     loading: true,
   };
@@ -69,9 +60,9 @@ class ProductListing extends Component<
   render() {
     const { category } = this.props.match.params;
     const { products } = this.state;
-    return (
-      <ProductListingStlyed>
-        <h2>{category}</h2>
+    return this.state.products ? (
+      <>
+        <PageTitle>{category}</PageTitle>
         <ProductGrid>
           {products?.map((product: Product) => (
             <ProductCard
@@ -85,7 +76,11 @@ class ProductListing extends Component<
             />
           ))}
         </ProductGrid>
-      </ProductListingStlyed>
+      </>
+    ) : this.state.loading ? (
+      <PageTitle>Loading</PageTitle>
+    ) : (
+      <PageTitle>Category Not Found</PageTitle>
     );
   }
 }
