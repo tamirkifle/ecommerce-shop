@@ -39,9 +39,8 @@ const ProductTitle = styled.h3`
 `;
 const CartItemsContainer = styled.div`
   max-height: 540px;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 1rem;
-  padding-right: 0;
 `;
 const CartFooter = styled.div`
   padding: 1rem;
@@ -121,7 +120,7 @@ class MiniCartDropdown extends Component<
           <CartIcon />
         </button>
         <Dropdown
-          style={{ right: "0", minWidth: "325px" }}
+          style={{ right: "0", minWidth: "341px" }}
           isOpen={isMiniCartOpen}
           onClose={closeDropdowns}
           overlayConfig={{ bgColor: "rgba(57, 55, 72, 0.22)" }}
