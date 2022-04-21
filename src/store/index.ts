@@ -1,10 +1,14 @@
 import { makeVar } from "@apollo/client";
+import { localStorageCart, localStorageCurrency } from "./localStorage";
 import { GlobalStoreType } from "./types";
 
 const initialState: GlobalStoreType = {
-  pageCurrency: { label: "GBP", symbol: "£" },
+  pageCurrency: localStorageCurrency || {
+    label: "GBP",
+    symbol: "£",
+  },
   defaultCategory: "all",
-  cartItems: [],
+  cartItems: localStorageCart || [],
   isCurrencySwitcherOpen: false,
   isMiniCartOpen: false,
   showModal: false,

@@ -6,15 +6,21 @@ import {
   MissingAttributeError,
   OutOfStockError,
 } from "./errors";
+import {
+  saveCartOnLocalStorage,
+  saveCurrencyOnLocalStorage,
+} from "./localStorage";
 import { renderAddedToCartModal, renderErrorModal } from "./modalBuilders";
 import { GlobalStoreType } from "./types";
 
-export const changeCurrency = (newCurrency: Currency): GlobalStoreType => {
+export const changeCurrency = (newCurrency: Currency) => {
   const newState: GlobalStoreType = {
     ...globalStore(),
     pageCurrency: newCurrency,
+    isCurrencySwitcherOpen: false,
   };
-  return globalStore(newState);
+  globalStore(newState);
+  saveCurrencyOnLocalStorage(newCurrency);
 };
 
 export const addToCart = (
@@ -66,7 +72,9 @@ export const addToCart = (
       ...oldState,
       cartItems: [...oldState.cartItems, cartItemToAdd],
     };
+
     globalStore(newState);
+    saveCartOnLocalStorage(newState.cartItems);
     renderAddedToCartModal(cartItemToAdd);
     return true;
   } catch (e: any) {
@@ -108,6 +116,7 @@ export const setQuantity = (itemId: string, newQuantity: number) => {
     (cartItem) => cartItem.id === itemId
   );
   newStore.cartItems[itemIndex].quantity = newQuantity;
+  saveCartOnLocalStorage(newStore.cartItems);
   return globalStore(newStore);
 };
 

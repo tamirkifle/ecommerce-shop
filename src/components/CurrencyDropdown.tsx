@@ -52,9 +52,6 @@ class CurrencyDropdown extends Component<
   CurrencyDropdownProps,
   CurrencyDropdownState
 > {
-  state = {
-    isCurrencySwitcherOpen: false,
-  };
   currencyBtn = createRef<HTMLButtonElement>();
 
   render() {
@@ -79,7 +76,6 @@ class CurrencyDropdown extends Component<
               key={currency.label}
               onClick={() => {
                 changeCurrency(currency);
-                closeDropdowns();
               }}
             >
               {currency.symbol} {currency.label}
