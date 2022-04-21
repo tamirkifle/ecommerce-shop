@@ -55,6 +55,10 @@ const AddToCartButton = styled.button`
   background-color: var(--accent, green);
   color: white;
   width: 400px;
+  &:disabled {
+    background-color: #96d7a7;
+    cursor: not-allowed;
+  }
 `;
 const Description = styled.div`
   font-family: var(--ff-roboto, "sans-serif");
@@ -162,8 +166,17 @@ class ProductDescription extends Component<Props, State> {
                 }
               </p>
             </Price>
-            <AddToCartButton onClick={this.addToCart}>
-              Add to Cart
+            <AddToCartButton
+              onClick={() =>
+                this.state.currentProduct?.inStock && this.addToCart()
+              }
+              disabled={
+                this.state.currentProduct && !this.state.currentProduct.inStock
+              }
+            >
+              {this.state.currentProduct?.inStock
+                ? "Add to Cart"
+                : "Out of Stock"}
             </AddToCartButton>
             <Description
               dangerouslySetInnerHTML={{

@@ -4,30 +4,14 @@ import { ReactComponent as CartIcon } from "../../../assets/empty_cart_white.svg
 import { ListingProduct, Price } from "../../../types";
 
 const Card = styled.div`
-  width: 386px;
+  --card-image-height: 330px;
+  --card-width: 386px;
+  --card-padding: 2rem;
+  width: var(--card-width);
   /* height: 480px; */
   font-size: 1.125rem;
-  padding: 2rem;
+  padding: var(--card-padding);
   position: relative;
-
-  & > img {
-    width: 354px;
-    height: 330px;
-    object-fit: contain;
-    object-position: top;
-    margin-bottom: 1.5rem;
-  }
-
-  .title {
-    font-weight: 300;
-    margin-bottom: 0.5rem;
-    font-size: 1.125rem;
-    line-height: 1.6;
-  }
-
-  .price {
-    font-weight: 500;
-  }
 
   &:hover {
     box-shadow: var(--bs);
@@ -35,6 +19,57 @@ const Card = styled.div`
     & > .showOnHover {
       display: block;
     }
+  }
+  &.out-of-stock::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  &.out-of-stock .image-container::after {
+    content: "Out of Stock";
+    position: absolute;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 38.4px;
+    color: #8d8f9a;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: var(--card-image-height);
+  position: relative;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top;
+  }
+`;
+
+const CardBody = styled.div`
+  margin-top: 1.5rem;
+  --flow-spacer: 0.5rem;
+  .title {
+    font-weight: 300;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .price {
+    font-weight: 500;
   }
 `;
 
@@ -73,18 +108,26 @@ class ProductCard extends Component<ProductCardProps> {
   render() {
     const { product } = this.props;
     return (
-      <Card onClick={this.props.handleClick}>
-        <img
-          src={product.gallery[0]}
-          alt={product.name}
-          style={{ width: "100%" }}
-        />
-        <h3 className="title">
-          {product.brand} {product.name}
-        </h3>
-        <p className="price">{this.state.priceWithCurrency}</p>
+      <Card
+        onClick={this.props.handleClick}
+        className={!this.props.product.inStock ? "out-of-stock" : ""}
+      >
+        <ImageContainer className="image-container">
+          <img
+            src={product.gallery[0]}
+            alt={product.name}
+            style={{ width: "100%" }}
+          />
+        </ImageContainer>
+        <CardBody className="flow-content">
+          <h3 className="title">
+            {product.brand} {product.name}
+          </h3>
+          <p className="price">{this.state.priceWithCurrency}</p>
+        </CardBody>
+
         <CartButton
-          className="showOnHover"
+          className={this.props.product.inStock ? "showOnHover" : ""}
           // onClick={(e) => {
           //   e.stopPropagation();
           //   console.log("Adding To Cart...");
