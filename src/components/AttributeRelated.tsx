@@ -180,3 +180,45 @@ export class MiniAttributeViewer extends Component<MiniAttributeViewerProps> {
     );
   }
 }
+
+export class MiniAttributeInput extends Component<
+  AttributeInputProps,
+  AttributeInputState
+> {
+  selectAttribute = (attributeItem: AttributeItem) => {
+    //TODO: Attribute and Item Type Definition
+    const selectedAttribute: SelectedAttribute = {
+      id: this.props.attribute.id,
+      name: this.props.attribute.name,
+      type: this.props.attribute.type,
+      item: attributeItem,
+    };
+    this.props.setSelectedAttributes(selectedAttribute);
+  };
+
+  render() {
+    const { attribute } = this.props;
+    return (
+      <AttributeInputStyled className="flow-content">
+        <MiniAttributeTitle>{this.props.attribute.name}:</MiniAttributeTitle>
+        <Chooser className="split">
+          {attribute.items.map((item) => (
+            <AttributeOption
+              key={item.id}
+              attribute={attribute}
+              attributeItem={item}
+              selectAttribute={this.selectAttribute}
+              isSelected={this.props.selectedAttribute?.item.id === item.id}
+              style={{
+                minWidth: "24px",
+                minHeight: "24px",
+                padding: "3px 6px",
+                fontSize: "14px",
+              }}
+            />
+          ))}
+        </Chooser>
+      </AttributeInputStyled>
+    );
+  }
+}

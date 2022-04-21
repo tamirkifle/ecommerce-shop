@@ -95,9 +95,15 @@ const GlobalStyles = css`
   .align-center {
     align-items: center;
   }
+  .align-end {
+    align-items: end;
+  }
 
   .space-between {
     justify-content: space-between;
+  }
+  .flex-end {
+    justify-content: flex-end;
   }
 
   .btn {

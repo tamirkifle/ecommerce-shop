@@ -28,7 +28,7 @@ const MiniCartStyled = styled.div`
   }
 `;
 
-const ProductTitle = styled.h3`
+export const ProductTitle = styled.h3`
   --flow-spacer: 0.5rem;
   font-size: inherit;
   font-weight: inherit;
@@ -46,7 +46,7 @@ const CartFooter = styled.div`
   padding: 1rem;
 `;
 
-const CartItemStyled = styled.div`
+export const CartItemStyled = styled.div`
   display: flex;
   min-height: 170px;
   justify-content: space-between;
@@ -66,22 +66,22 @@ const Total = styled.div`
   }
 `;
 
-const CartInfoStyled = styled.div`
+export const CartInfoStyled = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   flex-basis: 70%;
 `;
-const Price = styled.div``;
-const ProductInfo = styled.div`
+export const Price = styled.div``;
+export const ProductInfo = styled.div`
   --flow-spacer: 1rem;
 `;
 const QtyImageContainer = styled.div`
   --flex-spacer: 10px;
   max-height: 170px;
 `;
-const Attributes = styled.div`
+export const Attributes = styled.div`
   --flex-spacer: 10px;
 `;
 
