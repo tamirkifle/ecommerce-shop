@@ -27,35 +27,7 @@ class AddToCartModal extends Component<
     return (
       <ModalBaseStyled>
         <h2>Successfully added to cart!</h2>
-        <CartItemStyled key={this.props.cartItem.id}>
-          <CartInfoStyled className="flow-content">
-            <ProductInfo className="flow-content">
-              <ProductTitle className="flow-content">
-                <span className="product-brand">
-                  {this.props.cartItem.brand}
-                </span>
-                <span className="product-name">{this.props.cartItem.name}</span>
-              </ProductTitle>
-              <Attributes className="flow-content">
-                {Array.from(
-                  this.props.cartItem.selectedAttributes.values()
-                ).map((sAttribute) => (
-                  <MiniAttributeViewer
-                    key={sAttribute.id}
-                    selectedAttribute={sAttribute}
-                  />
-                ))}
-              </Attributes>
-            </ProductInfo>
-          </CartInfoStyled>
-          <MiniImageSlider
-            gallery={this.props.cartItem.gallery}
-            style={{
-              width: "105px",
-              height: "184px",
-            }}
-          />
-        </CartItemStyled>
+        <ModalProduct cartItem={this.props.cartItem} />
         <div className="action-buttons split flex-end align-end">
           <Link className="btn accent" to="/cart" onClick={closeModal}>
             Go To Cart
@@ -70,3 +42,46 @@ class AddToCartModal extends Component<
 }
 
 export default AddToCartModal;
+
+interface ModalProductProps {
+  cartItem: CartItem;
+}
+
+interface ModalProductState {}
+
+export class ModalProduct extends Component<
+  ModalProductProps,
+  ModalProductState
+> {
+  render() {
+    return (
+      <CartItemStyled key={this.props.cartItem.id}>
+        <CartInfoStyled className="flow-content">
+          <ProductInfo className="flow-content">
+            <ProductTitle className="flow-content">
+              <span className="product-brand">{this.props.cartItem.brand}</span>
+              <span className="product-name">{this.props.cartItem.name}</span>
+            </ProductTitle>
+            <Attributes className="flow-content">
+              {Array.from(this.props.cartItem.selectedAttributes.values()).map(
+                (sAttribute) => (
+                  <MiniAttributeViewer
+                    key={sAttribute.id}
+                    selectedAttribute={sAttribute}
+                  />
+                )
+              )}
+            </Attributes>
+          </ProductInfo>
+        </CartInfoStyled>
+        <MiniImageSlider
+          gallery={this.props.cartItem.gallery}
+          style={{
+            width: "105px",
+            height: "184px",
+          }}
+        />
+      </CartItemStyled>
+    );
+  }
+}

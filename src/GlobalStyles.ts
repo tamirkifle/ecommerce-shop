@@ -5,6 +5,7 @@ const GlobalStyles = css`
     --text: #43464e;
     --dark: #1d1f22;
     --accent: #5ece7b;
+    --danger: #ca2013;
     --ff-main: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     --ff-roboto: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -118,8 +119,13 @@ const GlobalStyles = css`
 
   .accent {
     color: white;
-    border: none;
+    border: 1px solid var(--accent);
     background-color: var(--accent);
+  }
+  .danger {
+    color: white;
+    border: 1px solid var(--danger);
+    background-color: var(--danger);
   }
 
   .bold {

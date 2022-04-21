@@ -10,7 +10,11 @@ import {
   saveCartOnLocalStorage,
   saveCurrencyOnLocalStorage,
 } from "./localStorage";
-import { renderAddedToCartModal, renderErrorModal } from "./modalBuilders";
+import {
+  confirmWithModal,
+  renderAddedToCartModal,
+  renderErrorModal,
+} from "./modalBuilders";
 import { GlobalStoreType } from "./types";
 
 export const changeCurrency = (newCurrency: Currency) => {
@@ -93,22 +97,25 @@ export const addToCart = (
 
 export const setQuantity = (itemId: string, newQuantity: number) => {
   const newStore = { ...globalStore() };
-
   if (newQuantity === 0) {
-    //TODO: Replace Confirm with Modal
-    if (
-      // eslint-disable-next-line no-restricted-globals
-      confirm(`Are you sure you want to remove the item from your cart?
-    `)
-    ) {
-      //remove the item if quantity is one
-      const itemIndex = newStore.cartItems.findIndex(
-        (cartItem) => cartItem.id === itemId
+    const removeItem = () => {
+      const newCartItems = newStore.cartItems.filter(
+        (cartItem) => cartItem.id !== itemId
       );
-      if (itemIndex !== -1) {
-        newStore.cartItems.splice(itemIndex, 1);
-        return globalStore(newStore);
-      }
+      globalStore({ ...newStore, cartItems: newCartItems });
+      saveCartOnLocalStorage(newCartItems);
+      return;
+    };
+    const itemToRemove = newStore.cartItems.find(
+      (cartItem) => cartItem.id === itemId
+    );
+    if (itemToRemove) {
+      confirmWithModal(
+        `Remove this item from cart?`,
+        removeItem,
+        () => closeModal(),
+        itemToRemove
+      );
     }
     return;
   }
