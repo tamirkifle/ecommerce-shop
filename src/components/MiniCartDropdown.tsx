@@ -8,23 +8,46 @@ import MiniImageSlider from "./MiniImageSlider";
 import QuantityCounter from "./QuantityCounter";
 import { MiniAttributeViewer } from "./AttributeRelated";
 import { Link } from "react-router-dom";
+import { CartItem } from "../types";
 
 const MiniCartStyled = styled.div`
   position: relative;
   z-index: 3;
   font-size: 1rem;
   font-weight: 500;
-  .action-button {
-    padding: 1rem;
-    font-size: 1.25rem;
-    line-height: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
   .mini-cart-header h2 {
     font-size: inherit;
     font-weight: inherit;
+  }
+`;
+interface CartButtonProps {
+  quantity: number;
+}
+const CartButton = styled.button<CartButtonProps>`
+  padding: 1rem;
+  font-size: 1.25rem;
+  line-height: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  .icon-container {
+    position: relative;
+  }
+  .icon-container::after {
+    content: "${(props) => `${props.quantity}`}";
+    display: ${(p) => (p.quantity ? "block" : "none")};
+    position: absolute;
+    top: -10px;
+    right: -12px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-family: var(--ff-roboto);
+    font-weight: 700;
+    font-size: 14px;
+    background-color: black;
+    color: white;
+    border-radius: 50%;
   }
 `;
 
@@ -111,14 +134,23 @@ class MiniCartDropdown extends Component<
   };
   currencyBtn = createRef<HTMLButtonElement>();
 
+  getTotalQuantity = (cartItems: CartItem[]) =>
+    cartItems.reduce((acc, cartItem) => acc + cartItem.quantity, 0);
+
   render() {
     const { pageCurrency, isMiniCartOpen, cartItems } = this.props.storeVar;
 
     return (
       <MiniCartStyled>
-        <button className="action-button" title="Cart" onClick={toggleMiniCart}>
-          <CartIcon />
-        </button>
+        <CartButton
+          title="Cart"
+          quantity={this.getTotalQuantity(cartItems)}
+          onClick={toggleMiniCart}
+        >
+          <div className="icon-container">
+            <CartIcon />
+          </div>
+        </CartButton>
         <Dropdown
           style={{ right: "0", minWidth: "341px" }}
           isOpen={isMiniCartOpen}
