@@ -6,12 +6,6 @@ import { withRouter, WithRouterProps } from "../../utils/withRouter";
 import { Product, SelectedAttribute, SelectedAttributes } from "../../types";
 import { withStore, WithStoreProps } from "../../graphql/withStore";
 import { addToCart } from "../../store/actions";
-import { productToCartItem } from "../../utils/productToCartItem";
-import {
-  AlreadyInCartError,
-  NoAttribiuteError,
-  OutOfStockError,
-} from "../../store/errors";
 import { PRODUCT__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 
@@ -123,36 +117,23 @@ class ProductDescription extends Component<
     });
   };
 
+  resetSelections = () => {
+    this.setState((oldState) => {
+      return {
+        ...oldState,
+        selectedAttributes: new Map<string, SelectedAttribute>(),
+      };
+    });
+  };
   addToCart = () => {
     if (this.state.currentProduct) {
       //TODO: Remove with loading state
-      console.log("Adding to Cart...");
-
-      try {
-        for (const { id } of this.state.currentProduct.attributes) {
-          if (!this.state.selectedAttributes.get(id)) {
-            throw new NoAttribiuteError(
-              "Please select all item attributes before adding to cart."
-            );
-          }
-        }
-        const added = addToCart(
-          productToCartItem(
-            this.state.currentProduct,
-            new Map(this.state.selectedAttributes)
-          )
-        );
-        if (added) {
-          alert("Item successfully added to cart.");
-        }
-      } catch (e: any) {
-        if (
-          e instanceof NoAttribiuteError ||
-          OutOfStockError ||
-          AlreadyInCartError
-        ) {
-          alert(e.message);
-        }
+      const added = addToCart(
+        this.state.currentProduct,
+        new Map(this.state.selectedAttributes)
+      );
+      if (added) {
+        this.resetSelections();
       }
     }
   };

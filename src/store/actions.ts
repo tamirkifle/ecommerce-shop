@@ -1,6 +1,12 @@
 import globalStore from ".";
-import { CartItem, Currency } from "../types";
-import { AlreadyInCartError, OutOfStockError } from "./errors";
+import { CartItem, Currency, Product, SelectedAttributes } from "../types";
+import { productToCartItem } from "../utils/productToCartItem";
+import {
+  AlreadyInCartError,
+  MissingAttributeError,
+  OutOfStockError,
+} from "./errors";
+import { renderAddedToCartModal, renderErrorModal } from "./modalBuilders";
 import { GlobalStoreType } from "./types";
 
 export const changeCurrency = (newCurrency: Currency): GlobalStoreType => {
@@ -11,44 +17,72 @@ export const changeCurrency = (newCurrency: Currency): GlobalStoreType => {
   return globalStore(newState);
 };
 
-export const addToCart = (itemToAdd: CartItem): boolean => {
-  if (!itemToAdd.inStock) {
-    throw new OutOfStockError("Item is out of stock.");
-  }
-  const oldState = globalStore();
-  const itemInOldState = oldState.cartItems.find((oldCartItem) => {
-    //Check if they are the from the same item
-    const sameItem = oldCartItem.id === itemToAdd.id;
-    if (!sameItem) {
-      return false;
-    }
-    //Check if all selected attributes are the same value
-    let allSameAttributes = true;
-    for (const [key, value] of itemToAdd.selectedAttributes) {
-      const oldSelectedAttributes = oldCartItem.selectedAttributes.get(key);
-      if (
-        !oldSelectedAttributes ||
-        (oldSelectedAttributes.id === value.id &&
-          oldSelectedAttributes.item.id !== value.item.id)
-      ) {
-        allSameAttributes = false;
-        break;
+export const addToCart = (
+  itemToAdd: Product,
+  selectedAttributes: SelectedAttributes
+): boolean => {
+  try {
+    let cartItemToAdd: CartItem = productToCartItem(
+      itemToAdd,
+      selectedAttributes
+    );
+    for (const { id } of itemToAdd.attributes) {
+      if (!selectedAttributes.get(id)) {
+        throw new MissingAttributeError(
+          "All of the item attributes must be selected before adding to cart."
+        );
       }
     }
-    return allSameAttributes ? true : false;
-  });
-  if (itemInOldState) {
-    throw new AlreadyInCartError("Item is already in the cart");
-  }
+    if (!cartItemToAdd.inStock) {
+      throw new OutOfStockError("Item is out of stock.");
+    }
+    const oldState = globalStore();
+    const itemInOldState = oldState.cartItems.find((oldCartItem) => {
+      //Check if they are the from the same item
+      const sameItem = oldCartItem.id === cartItemToAdd.id;
+      if (!sameItem) {
+        return false;
+      }
+      //Check if all selected attributes are the same value
+      let allSameAttributes = true;
+      for (const [key, value] of cartItemToAdd.selectedAttributes) {
+        const oldSelectedAttributes = oldCartItem.selectedAttributes.get(key);
+        if (
+          !oldSelectedAttributes ||
+          (oldSelectedAttributes.id === value.id &&
+            oldSelectedAttributes.item.id !== value.item.id)
+        ) {
+          allSameAttributes = false;
+          break;
+        }
+      }
+      return allSameAttributes ? true : false;
+    });
+    if (itemInOldState) {
+      throw new AlreadyInCartError("Item is already in the cart");
+    }
 
-  console.log("New Item");
-  const newState = {
-    ...oldState,
-    cartItems: [...oldState.cartItems, itemToAdd],
-  };
-  globalStore(newState);
-  return true;
+    const newState = {
+      ...oldState,
+      cartItems: [...oldState.cartItems, cartItemToAdd],
+    };
+    globalStore(newState);
+    renderAddedToCartModal(cartItemToAdd);
+    return true;
+  } catch (e: any) {
+    if (
+      e instanceof OutOfStockError ||
+      e instanceof AlreadyInCartError ||
+      e instanceof MissingAttributeError
+    ) {
+      renderErrorModal(e.message);
+      return false;
+    } else {
+      throw e;
+    }
+  }
 };
+
 export const setQuantity = (itemId: string, newQuantity: number) => {
   const newStore = { ...globalStore() };
 
