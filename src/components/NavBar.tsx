@@ -119,7 +119,7 @@ class NavBar extends Component<NavBarProps, NavBarState> {
                 <li key={String(category.name)}>
                   <Link
                     className="nav-link"
-                    to={`/${category.name}`}
+                    to={`/categories/${category.name}`}
                     onClick={() => closeDropdowns()}
                   >
                     {category.name}

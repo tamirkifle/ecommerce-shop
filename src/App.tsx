@@ -23,7 +23,7 @@ function App() {
         <MainContent className="container">
           <Routes>
             <Route path="/" element={<ProductListing />} />
-            <Route path="/:category" element={<ProductListing />} />
+            <Route path="/categories/:category" element={<ProductListing />} />
             <Route
               path="/product/:productId"
               element={<ProductDescription />}
