@@ -6,7 +6,6 @@ import { Category, Currency } from "../types";
 import Loading from "./Loading";
 import { NAVBAR__QUERY } from "../graphql/queries";
 import { withClient, WithClientProps } from "../graphql/withApolloClient";
-import { withStore, WithStoreProps } from "../graphql/withStore";
 import CurrencyDropdown from "./CurrencyDropdown";
 import MiniCartDropdown from "./MiniCartDropdown";
 import { closeDropdowns } from "../store/actions";
@@ -84,7 +83,7 @@ interface NavBarState {
   loading: boolean;
 }
 
-type NavBarProps = NavBarOwnProps & WithClientProps & WithStoreProps;
+type NavBarProps = NavBarOwnProps & WithClientProps;
 class NavBar extends Component<NavBarProps, NavBarState> {
   state: NavBarState = {
     categories: null,
@@ -161,4 +160,4 @@ class LoadingNavBar extends Component {
   }
 }
 
-export default withStore(withClient(NavBar));
+export default withClient(NavBar);

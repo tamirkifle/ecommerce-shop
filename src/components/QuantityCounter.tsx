@@ -28,7 +28,6 @@ class QuantityCounter extends Component<
         <QuanitityButton
           className="btn"
           onClick={() => {
-            console.log("onClick called");
             this.props.increaseQuantity();
           }}
           style={this.props.btnStyle}
