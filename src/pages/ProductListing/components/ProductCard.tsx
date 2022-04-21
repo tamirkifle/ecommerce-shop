@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Component, MouseEventHandler } from "react";
 import { ReactComponent as CartIcon } from "../../../assets/empty_cart_white.svg";
-import { ListingProduct, Price } from "../../../types";
+import { Product, Price } from "../../../types";
 
 const Card = styled.div`
   --card-image-height: 330px;
@@ -86,7 +86,7 @@ const CartButton = styled.button`
 `;
 
 type ProductCardProps = {
-  product: ListingProduct;
+  product: Product;
   handleClick: MouseEventHandler<HTMLDivElement>;
 };
 

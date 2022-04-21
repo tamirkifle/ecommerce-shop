@@ -12,7 +12,7 @@ export const NAVBAR__QUERY = gql`
   }
 `;
 
-export const PRODUCT__LISTING__QUERY = gql`
+export const PRODUCTS__QUERY = gql`
   query getCategory($categoryName: CategoryInput) {
     category(input: $categoryName) {
       products {
@@ -28,7 +28,48 @@ export const PRODUCT__LISTING__QUERY = gql`
             symbol
           }
         }
+        attributes {
+          name
+          id
+          type
+          items {
+            displayValue
+            value
+            id
+          }
+        }
+        description
       }
+    }
+  }
+`;
+
+export const PRODUCT__QUERY = gql`
+  query getProduct($productId: String!) {
+    product(id: $productId) {
+      id
+      name
+      inStock
+      gallery
+      brand
+      prices {
+        amount
+        currency {
+          label
+          symbol
+        }
+      }
+      attributes {
+        name
+        id
+        type
+        items {
+          displayValue
+          value
+          id
+        }
+      }
+      description
     }
   }
 `;

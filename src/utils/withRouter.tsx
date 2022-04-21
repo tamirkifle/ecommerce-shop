@@ -1,14 +1,17 @@
 import { ComponentType } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-export interface WithRouterProps<T = ReturnType<typeof useParams>> {
+export interface WithRouterProps<
+  T = ReturnType<typeof useParams>,
+  U = ReturnType<typeof useLocation>
+> {
   history: {
     back: () => void;
     goBack: () => void;
     location: ReturnType<typeof useLocation>;
     push: (url: string, state?: any) => void;
   };
-  location: ReturnType<typeof useLocation>;
+  location: U;
   match: {
     params: T;
   };

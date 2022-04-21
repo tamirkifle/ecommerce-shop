@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Component } from "react";
 import ImageViewer from "../../components/ImageViewer";
 import { AttributeInput } from "../../components/AttributeRelated";
-import { products } from "../../mockData";
 import { withRouter, WithRouterProps } from "../../utils/withRouter";
 import { Product, SelectedAttribute, SelectedAttributes } from "../../types";
 import { withStore, WithStoreProps } from "../../graphql/withStore";
@@ -13,6 +12,8 @@ import {
   NoAttribiuteError,
   OutOfStockError,
 } from "../../store/errors";
+import { PRODUCT__QUERY } from "../../graphql/queries";
+import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 
 const ProductDescriptionStyled = styled.div`
   display: flex;
@@ -65,30 +66,53 @@ const Description = styled.div`
   line-height: 1.6;
 `;
 
-interface Params {
+interface ProductDescriptionRouteParams {
   productId: string;
 }
+interface ProductDescriptionRouteState {
+  product: Product;
+}
 
-type State = {
+type ProductDescriptionState = {
   currentProduct: Product | null;
   selectedAttributes: SelectedAttributes;
+  loading: boolean;
 };
 
-type Props = WithRouterProps<Params> & WithStoreProps;
+type ProductDescriptionProps = WithClientProps &
+  WithRouterProps<ProductDescriptionRouteParams, ProductDescriptionRouteState> &
+  WithStoreProps;
 
-class ProductDescription extends Component<Props, State> {
-  state: State = {
+class ProductDescription extends Component<
+  ProductDescriptionProps,
+  ProductDescriptionState
+> {
+  state: ProductDescriptionState = {
     currentProduct: null,
     selectedAttributes: new Map<string, SelectedAttribute>(),
+    loading: true,
   };
-  componentDidMount() {
-    const { productId } = this.props.match.params;
-    const product = products.categories.all.find(
-      (product) => product.id === productId
-    );
+
+  getProduct = async (id: string) => {
+    const { data, loading } = await this.props.client.query({
+      query: PRODUCT__QUERY,
+      variables: { productId: id }, //TODO: read defaultCategory from global state or query from graphql
+    });
+    this.setState({
+      currentProduct: data?.product as Product,
+      loading,
+    });
+  };
+
+  async componentDidMount() {
+    const { product } = this.props.location;
     if (product) {
+      //Don't run query if navigating from product listing, it will be passed through the route state
       this.setState({ currentProduct: product });
+      return;
     }
+    const { productId } = this.props.match.params;
+    await this.getProduct(productId);
   }
 
   setSelectedAttributes = (selectedAttribute: SelectedAttribute) => {
@@ -197,4 +221,4 @@ class ProductDescription extends Component<Props, State> {
   }
 }
 
-export default withStore(withRouter(ProductDescription));
+export default withClient(withStore(withRouter(ProductDescription)));

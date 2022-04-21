@@ -2,8 +2,8 @@ import styled from "@emotion/styled";
 import { Component } from "react";
 import ProductCard from "./components/ProductCard";
 import { withRouter, WithRouterProps } from "../../utils/withRouter";
-import { ListingProduct } from "../../types";
-import { PRODUCT__LISTING__QUERY } from "../../graphql/queries";
+import { Product } from "../../types";
+import { PRODUCTS__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 
 const ProductListingStlyed = styled.div`
@@ -26,7 +26,7 @@ interface ProductListingRouterParams {
 interface ProductListingExtraProps {}
 interface ProductListingState {
   category: string | null;
-  products: ListingProduct[] | null;
+  products: Product[] | null;
   loading: boolean;
 }
 type ProductListingProps = ProductListingExtraProps &
@@ -44,11 +44,11 @@ class ProductListing extends Component<
 
   getProducts = async (category: string) => {
     const { data, loading } = await this.props.client.query({
-      query: PRODUCT__LISTING__QUERY,
+      query: PRODUCTS__QUERY,
       variables: { categoryName: { title: category || "all" } }, //TODO: read defaultCategory from global state or query from graphql
     });
     this.setState({
-      products: data?.category?.products as ListingProduct[],
+      products: data?.category?.products as Product[],
       loading,
     });
   };
@@ -73,12 +73,14 @@ class ProductListing extends Component<
       <ProductListingStlyed>
         <h2>{category}</h2>
         <ProductGrid>
-          {products?.map((product: ListingProduct) => (
+          {products?.map((product: Product) => (
             <ProductCard
               key={product.id}
               product={product}
               handleClick={() => {
-                this.props.navigate(`/product/${product.id}`);
+                this.props.navigate(`/product/${product.id}`, {
+                  state: product,
+                });
               }}
             />
           ))}
