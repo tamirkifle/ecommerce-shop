@@ -42,6 +42,8 @@ const StyledNav = styled.nav`
     height: var(--nav-height, 80px);
     text-decoration: none;
     color: inherit;
+    position: relative;
+    z-index: 2;
   }
 
   .nav-link:before {
@@ -74,6 +76,14 @@ const StyledNav = styled.nav`
     margin-left: 10px;
     margin-bottom: 5px;
   }
+`;
+
+const NavOverlay = styled.div`
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  width: 100%;
+  height: 100%;
 `;
 
 interface NavBarOwnProps {}
@@ -118,7 +128,7 @@ class NavBar extends Component<NavBarProps, NavBarState> {
                   <Link
                     className="nav-link"
                     to={`/categories/${category.name}`}
-                    onClick={() => closeDropdowns()}
+                    onClick={closeDropdowns}
                   >
                     {category.name}
                   </Link>
@@ -133,6 +143,7 @@ class NavBar extends Component<NavBarProps, NavBarState> {
             <CurrencyDropdown currencies={this.state.currencies} />
             <MiniCartDropdown />
           </div>
+          <NavOverlay onClick={closeDropdowns} />
         </StyledNav>
       </Header>
     ) : this.state.loading ? (
