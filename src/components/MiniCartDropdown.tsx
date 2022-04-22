@@ -167,7 +167,14 @@ class MiniCartDropdown extends Component<
                   </h2>
                 </header>
                 {cartItems.map((item) => (
-                  <CartItemStyled key={item.id}>
+                  <CartItemStyled
+                    key={item.id.concat(
+                      "_",
+                      Array.from(item.selectedAttributes.values())
+                        .map((v) => v.item.value)
+                        .join("_")
+                    )}
+                  >
                     <CartInfoStyled className="flow-content">
                       <ProductInfo className="flow-content">
                         <ProductTitle className="flow-content">
