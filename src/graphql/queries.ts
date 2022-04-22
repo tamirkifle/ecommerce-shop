@@ -11,6 +11,13 @@ export const NAVBAR__QUERY = gql`
     }
   }
 `;
+export const CATEGORIES__QUERY = gql`
+  query {
+    categories {
+      name
+    }
+  }
+`;
 
 export const PRODUCTS__QUERY = gql`
   query getCategory($categoryName: CategoryInput) {

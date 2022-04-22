@@ -7,7 +7,6 @@ const initialState: GlobalStoreType = {
     label: "GBP",
     symbol: "£",
   },
-  defaultCategory: "all",
   cartItems: localStorageCart || [],
   isCurrencySwitcherOpen: false,
   isMiniCartOpen: false,

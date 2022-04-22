@@ -91,7 +91,7 @@ class ProductDescription extends Component<
   getProduct = async (id: string) => {
     const { data, loading } = await this.props.client.query({
       query: PRODUCT__QUERY,
-      variables: { productId: id }, //TODO: read defaultCategory from global state or query from graphql
+      variables: { productId: id },
     });
     this.setState({
       currentProduct: data?.product as Product,
