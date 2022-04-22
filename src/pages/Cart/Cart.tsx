@@ -97,7 +97,7 @@ class Cart extends Component<CartProps, CartState> {
                         100
                     ) / 100}
                   </Price>
-                  <div>
+                  <div className="flow-content">
                     {Array.from(item.selectedAttributes.values()).map(
                       (sAttribute) => (
                         <AttributeViewer
