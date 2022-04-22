@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { Category, Currency } from "../types";
-import Loading from "./Loading";
 import { NAVBAR__QUERY } from "../graphql/queries";
 import { withClient, WithClientProps } from "../graphql/withApolloClient";
 import CurrencyDropdown from "./CurrencyDropdown";
 import MiniCartDropdown from "./MiniCartDropdown";
 import { closeDropdowns } from "../store/actions";
+import LoadingNavBar from "./loading/LoadingNavBar";
 
 const Header = styled.header`
   position: relative;
@@ -108,13 +108,11 @@ class NavBar extends Component<NavBarProps, NavBarState> {
     this.getNavData();
   }
   render() {
-    return this.state.loading ? (
-      <LoadingNavBar />
-    ) : (
+    return this.state.categories && this.state.currencies ? (
       <Header>
         <StyledNav className="container">
           <ul className="nav--links">
-            {this.state.categories?.map((category: Category) => {
+            {this.state.categories.map((category: Category) => {
               return (
                 <li key={String(category.name)}>
                   <Link
@@ -137,26 +135,9 @@ class NavBar extends Component<NavBarProps, NavBarState> {
           </div>
         </StyledNav>
       </Header>
-    );
-  }
-}
-
-class LoadingNavBar extends Component {
-  render() {
-    return (
-      <StyledNav className="container">
-        <ul className="nav--links">
-          <Loading max-width="200px" />
-        </ul>
-        <div className="nav--logo-container">
-          <Logo />
-        </div>
-        <div className="nav--buttons">
-          <Loading width="50px" spacer="5px" />
-          <Loading width="50px" spacer="5px" />
-        </div>
-      </StyledNav>
-    );
+    ) : this.state.loading ? (
+      <LoadingNavBar />
+    ) : null;
   }
 }
 

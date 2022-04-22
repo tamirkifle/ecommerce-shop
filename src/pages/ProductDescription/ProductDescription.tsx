@@ -9,10 +9,10 @@ import { addToCart } from "../../store/actions";
 import { PRODUCT__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 import { PageTitle } from "../../components/commonStyles";
+import LoadingProductDescription from "../../components/loading/LoadingProductDescription";
 
 const ProductDescriptionStyled = styled.div`
   display: flex;
-  --flow-sapcer: 6.25rem;
   .section-title {
     font-family: var(--ff-roboto-c, "sans-serif");
     font-weight: 700;
@@ -103,7 +103,7 @@ class ProductDescription extends Component<
     const { product } = this.props.location;
     if (product) {
       //Don't run query if navigating from product listing, it will be passed through the route state
-      this.setState({ currentProduct: product });
+      this.setState({ currentProduct: product as Product });
       return;
     }
     const { productId } = this.props.match.params;
@@ -191,7 +191,7 @@ class ProductDescription extends Component<
         </ProductDetails>
       </ProductDescriptionStyled>
     ) : this.state.loading ? (
-      <PageTitle>Loading</PageTitle>
+      <LoadingProductDescription />
     ) : (
       <PageTitle>Product Not Found</PageTitle>
     );

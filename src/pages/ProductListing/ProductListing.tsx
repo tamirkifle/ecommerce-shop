@@ -6,6 +6,7 @@ import { Product } from "../../types";
 import { PRODUCTS__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 import { PageTitle } from "../../components/commonStyles";
+import LoadingProductListing from "../../components/loading/LoadingProductListing";
 
 const ProductGrid = styled.div`
   display: grid;
@@ -60,11 +61,11 @@ class ProductListing extends Component<
   render() {
     const { category } = this.props.match.params;
     const { products } = this.state;
-    return this.state.products ? (
+    return products ? (
       <>
         <PageTitle>{category}</PageTitle>
         <ProductGrid>
-          {products?.map((product: Product) => (
+          {products.map((product: Product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -78,7 +79,7 @@ class ProductListing extends Component<
         </ProductGrid>
       </>
     ) : this.state.loading ? (
-      <PageTitle>Loading</PageTitle>
+      <LoadingProductListing />
     ) : (
       <PageTitle>Category Not Found</PageTitle>
     );
