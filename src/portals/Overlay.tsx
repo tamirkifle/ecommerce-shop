@@ -10,8 +10,10 @@ const OverlayStyled = styled.div<OverlayStyledProps>`
   position: fixed;
   top: 0;
   z-index: ${(p) => p.zIndex || "1"};
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: ${(p) => (p.bgColor ? p.bgColor : "transparent")};
 `;
 
