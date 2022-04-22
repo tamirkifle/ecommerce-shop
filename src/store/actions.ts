@@ -47,28 +47,8 @@ export const addToCart = (
       throw new OutOfStockError("Item is out of stock.");
     }
     const oldState = globalStore();
-    const itemInOldState = oldState.cartItems.find((oldCartItem) => {
-      //Check if they are the from the same item
-      const sameItem = oldCartItem.id === cartItemToAdd.id;
-      if (!sameItem) {
-        return false;
-      }
-      //Check if all selected attributes are the same value
-      let allSameAttributes = true;
-      for (const [key, value] of cartItemToAdd.selectedAttributes) {
-        const oldSelectedAttributes = oldCartItem.selectedAttributes.get(key);
-        if (
-          !oldSelectedAttributes ||
-          (oldSelectedAttributes.id === value.id &&
-            oldSelectedAttributes.item.id !== value.item.id)
-        ) {
-          allSameAttributes = false;
-          break;
-        }
-      }
-      return allSameAttributes ? true : false;
-    });
-    if (itemInOldState) {
+    const itemIndex = indexOfItemInCart(cartItemToAdd, oldState.cartItems);
+    if (itemIndex !== -1) {
       throw new AlreadyInCartError("Item is already in the cart");
     }
 
@@ -95,36 +75,59 @@ export const addToCart = (
   }
 };
 
-export const setQuantity = (itemId: string, newQuantity: number) => {
-  const newStore = { ...globalStore() };
+const indexOfItemInCart = (cartItem: CartItem, cartItems: CartItem[]) => {
+  return cartItems.findIndex((oldCartItem) => {
+    //Check if they are the from the same item
+    const sameItem = oldCartItem.id === cartItem.id;
+    if (!sameItem) {
+      return false;
+    }
+    //Check if all selected attributes are the same value
+    let allSameAttributes = true;
+    for (const [key, value] of cartItem.selectedAttributes) {
+      const oldSelectedAttributes = oldCartItem.selectedAttributes.get(key);
+      if (
+        !oldSelectedAttributes ||
+        (oldSelectedAttributes.id === value.id &&
+          oldSelectedAttributes.item.id !== value.item.id)
+      ) {
+        allSameAttributes = false;
+        break;
+      }
+    }
+    return allSameAttributes ? true : false;
+  });
+};
+
+export const setQuantity = (cartItem: CartItem, newQuantity: number) => {
+  const oldStore = globalStore();
   if (newQuantity === 0) {
     const removeItem = () => {
-      const newCartItems = newStore.cartItems.filter(
-        (cartItem) => cartItem.id !== itemId
+      const newCartItems = oldStore.cartItems.filter(
+        (item) => item.id !== cartItem.id
       );
-      globalStore({ ...newStore, cartItems: newCartItems });
+      globalStore({ ...oldStore, cartItems: newCartItems });
       saveCartOnLocalStorage(newCartItems);
       return;
     };
-    const itemToRemove = newStore.cartItems.find(
-      (cartItem) => cartItem.id === itemId
+
+    confirmWithModal(
+      `Remove this item from cart?`,
+      removeItem,
+      () => closeModal(),
+      cartItem
     );
-    if (itemToRemove) {
-      confirmWithModal(
-        `Remove this item from cart?`,
-        removeItem,
-        () => closeModal(),
-        itemToRemove
-      );
-    }
     return;
   }
-  const itemIndex = newStore.cartItems.findIndex(
-    (cartItem) => cartItem.id === itemId
-  );
-  newStore.cartItems[itemIndex].quantity = newQuantity;
+  const cartItemsCopy = [...oldStore.cartItems];
+  const itemIndex = indexOfItemInCart(cartItem, cartItemsCopy);
+  if (itemIndex !== -1) {
+    cartItemsCopy[itemIndex].quantity = newQuantity;
+  }
+  const newStore = { ...oldStore, cartItems: cartItemsCopy };
   saveCartOnLocalStorage(newStore.cartItems);
-  return globalStore(newStore);
+  globalStore(newStore);
+  return;
 };
 
 export const toggleCurrencySwitcher = () => {

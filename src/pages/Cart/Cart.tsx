@@ -112,10 +112,10 @@ class Cart extends Component<CartProps, CartState> {
                   <QuantityCounter
                     quantity={item.quantity}
                     increaseQuantity={() =>
-                      setQuantity(item.id, item.quantity + 1)
+                      setQuantity(item, item.quantity + 1)
                     }
                     decreaseQuantity={() =>
-                      setQuantity(item.id, item.quantity - 1)
+                      setQuantity(item, item.quantity - 1)
                     }
                     btnStyle={{
                       fontSize: "1rem",
