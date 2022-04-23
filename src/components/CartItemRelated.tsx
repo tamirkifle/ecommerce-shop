@@ -8,11 +8,7 @@ import {
   SelectedAttribute,
   SelectedAttributes,
 } from "../types";
-import {
-  AttributeViewer,
-  MiniAttributeInput,
-  MiniAttributeViewer,
-} from "./AttributeRelated";
+import { AttributeInput, AttributeViewer } from "./AttributeRelated";
 import MiniImageSlider from "./MiniImageSlider";
 import QuantityCounter from "./QuantityCounter";
 
@@ -112,9 +108,10 @@ class CartItemViewerBase extends Component<
                     selectedAttribute={sAttribute}
                   />
                 ) : (
-                  <MiniAttributeViewer
+                  <AttributeViewer
                     key={sAttribute.id}
                     selectedAttribute={sAttribute}
+                    mini
                   />
                 )
             )}
@@ -241,13 +238,14 @@ class ModalProductViewerBase extends Component<
           <Attributes className="flow-content">
             <p>Please choose attributes:</p>
             {this.props.product.attributes.map((attribute) => (
-              <MiniAttributeInput
+              <AttributeInput
                 key={attribute.id}
                 attribute={attribute}
                 selectedAttribute={this.props.selectedAttributes?.get(
                   attribute.id
                 )}
                 setSelectedAttributes={this.props.setSelectedAttributes}
+                mini
               />
             ))}
           </Attributes>
