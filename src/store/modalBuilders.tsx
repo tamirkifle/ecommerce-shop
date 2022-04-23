@@ -1,6 +1,5 @@
-import AddToCartModal, {
-  ModalProduct,
-} from "../components/modals/AddedToCartModal";
+import { CartItemViewer } from "../components/CartItemRelated";
+import AddToCartModal from "../components/modals/AddedToCartModal";
 import AttributeModal from "../components/modals/AttributeModal";
 import ConfirmationModal from "../components/modals/ConfirmationModal";
 import ErrorModal from "../components/modals/ErrorModal";
@@ -36,7 +35,7 @@ export const confirmWithModal = (
         cartItem ? (
           <>
             <h2>{confirmationMessage}</h2>
-            <ModalProduct cartItem={cartItem} />
+            <CartItemViewer cartItem={cartItem} type="added-to-cart-modal" />
           </>
         ) : (
           confirmationMessage
