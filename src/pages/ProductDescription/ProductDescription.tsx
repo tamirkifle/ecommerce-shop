@@ -112,9 +112,11 @@ class ProductDescription extends Component<
 
   setSelectedAttributes = (selectedAttribute: SelectedAttribute) => {
     this.setState((oldState) => {
-      const { selectedAttributes } = { ...oldState };
-      selectedAttributes.set(selectedAttribute.id, selectedAttribute);
-      return { ...oldState, selectedAttributes };
+      const newSelectedAttributes = new Map<string, SelectedAttribute>(
+        oldState.selectedAttributes
+      );
+      newSelectedAttributes.set(selectedAttribute.id, selectedAttribute);
+      return { ...oldState, selectedAttributes: newSelectedAttributes };
     });
   };
 
@@ -128,7 +130,6 @@ class ProductDescription extends Component<
   };
   addToCart = () => {
     if (this.state.currentProduct) {
-      //TODO: Remove with loading state
       const added = addToCart(
         this.state.currentProduct,
         new Map(this.state.selectedAttributes)

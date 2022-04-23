@@ -24,9 +24,11 @@ class AttributeModalBase extends Component<
 
   setSelectedAttributes = (selectedAttribute: SelectedAttribute) => {
     this.setState((oldState) => {
-      const { selectedAttributes } = { ...oldState };
-      selectedAttributes.set(selectedAttribute.id, selectedAttribute);
-      return { ...oldState, selectedAttributes };
+      const newSelectedAttributes = new Map<string, SelectedAttribute>(
+        oldState.selectedAttributes
+      );
+      newSelectedAttributes.set(selectedAttribute.id, selectedAttribute);
+      return { selectedAttributes: newSelectedAttributes };
     });
   };
 
