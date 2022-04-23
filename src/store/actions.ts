@@ -101,13 +101,15 @@ const indexOfItemInCart = (cartItem: CartItem, cartItems: CartItem[]) => {
 
 export const setQuantity = (cartItem: CartItem, newQuantity: number) => {
   const oldStore = globalStore();
+  const cartItemsCopy = [...oldStore.cartItems];
   if (newQuantity === 0) {
     const removeItem = () => {
-      const newCartItems = oldStore.cartItems.filter(
-        (item) => item.id !== cartItem.id
-      );
-      globalStore({ ...oldStore, cartItems: newCartItems });
-      saveCartOnLocalStorage(newCartItems);
+      const itemIndex = indexOfItemInCart(cartItem, cartItemsCopy);
+      if (itemIndex !== -1) {
+        cartItemsCopy.splice(itemIndex, 1);
+      }
+      globalStore({ ...oldStore, cartItems: cartItemsCopy });
+      saveCartOnLocalStorage(cartItemsCopy);
       return;
     };
 
@@ -119,7 +121,6 @@ export const setQuantity = (cartItem: CartItem, newQuantity: number) => {
     );
     return;
   }
-  const cartItemsCopy = [...oldStore.cartItems];
   const itemIndex = indexOfItemInCart(cartItem, cartItemsCopy);
   if (itemIndex !== -1) {
     cartItemsCopy[itemIndex].quantity = newQuantity;
