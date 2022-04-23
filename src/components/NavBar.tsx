@@ -15,26 +15,16 @@ const Header = styled.header`
   z-index: 2;
   background-color: white;
 `;
+
 const StyledNav = styled.nav`
-  height: var(--nav-height, 80px);
-  display: flex;
-
   & > * {
-    display: flex;
-    flex-basis: 100%;
+    --flex-spacer: 0.5rem;
   }
+  height: var(--nav-height, 80px);
+`;
 
-  .nav--logo-container {
-    flex-basis: 0%;
-    line-height: 0;
-    padding: 1rem;
-  }
-
-  .nav--buttons {
-    justify-content: flex-end;
-  }
-
-  /* Nav Links */
+const NavLinks = styled.ul`
+  flex-basis: 100%;
   .nav-link {
     text-transform: uppercase;
     display: inline-block;
@@ -60,22 +50,19 @@ const StyledNav = styled.nav`
   .nav-link:hover {
     border-bottom: 2px solid var(--accent);
   }
+`;
 
-  /* Action Buttons */
-  .nav-button {
-    padding: 1rem;
-    font-size: 1.25rem;
-    line-height: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
+const NavLogoContainer = styled.div`
+  flex-basis: 0%;
+  align-self: center;
+  padding: 1rem;
+`;
 
-  .dropdown::after {
-    content: "\u2304";
-    margin-left: 10px;
-    margin-bottom: 5px;
+const NavButtons = styled.div`
+  & > * {
+    --flex-spacer: 0;
   }
+  flex-basis: 100%;
 `;
 
 const NavOverlay = styled.div`
@@ -120,8 +107,8 @@ class NavBar extends Component<NavBarProps, NavBarState> {
   render() {
     return this.state.categories && this.state.currencies ? (
       <Header>
-        <StyledNav className="container">
-          <ul className="nav--links">
+        <StyledNav className="container split">
+          <NavLinks className="split">
             {this.state.categories.map((category: Category) => {
               return (
                 <li key={String(category.name)}>
@@ -135,14 +122,14 @@ class NavBar extends Component<NavBarProps, NavBarState> {
                 </li>
               );
             })}
-          </ul>
-          <div className="nav--logo-container">
+          </NavLinks>
+          <NavLogoContainer>
             <Logo />
-          </div>
-          <div className="nav--buttons">
+          </NavLogoContainer>
+          <NavButtons className="split flex-end">
             <CurrencyDropdown currencies={this.state.currencies} />
             <MiniCartDropdown />
-          </div>
+          </NavButtons>
           <NavOverlay onClick={closeDropdowns} />
         </StyledNav>
       </Header>
