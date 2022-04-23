@@ -18,7 +18,7 @@ const DropdownStyled = styled.div<DropdownStyledProps>`
 interface DropdownProps {
   isOpen: boolean;
   onClose: () => void;
-  overlayConfig?: { opacity?: string; bgColor?: string };
+  clearOverlay?: boolean;
   top?: string;
   style?: React.CSSProperties;
 }
@@ -33,7 +33,14 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           <DropdownStyled isOpen={this.props.isOpen} style={this.props.style}>
             {this.props.children}
           </DropdownStyled>
-          <Overlay onClick={this.props.onClose} {...this.props.overlayConfig} />
+          <Overlay
+            onClick={this.props.onClose}
+            bgColor={
+              !this.props.clearOverlay
+                ? "rgba(57, 55, 72, 0.22)"
+                : "transparent"
+            }
+          />
         </>
       )
     );

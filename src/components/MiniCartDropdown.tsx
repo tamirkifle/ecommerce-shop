@@ -100,7 +100,6 @@ class MiniCartDropdown extends Component<
           style={{ right: "0", minWidth: "341px" }}
           isOpen={isMiniCartOpen}
           onClose={closeDropdowns}
-          overlayConfig={{ bgColor: "rgba(57, 55, 72, 0.22)" }}
         >
           {cartItems.length > 0 ? (
             <>
