@@ -13,24 +13,11 @@ import { AttributeInput, AttributeViewer } from "./AttributeRelated";
 import MiniImageSlider from "./MiniImageSlider";
 import QuantityCounter from "./QuantityCounter";
 import PriceViewer from "./PriceViewer";
+import { ProductTitle } from "./commonStyles";
 
 interface StyleProps {
   type?: CartViewerTypes;
 }
-const ProductTitle = styled.header<StyleProps>`
-  --flow-spacer: ${(p) => (p.type === "cart" ? "0.8rem" : "0.5rem")};
-  span {
-    display: block;
-    font-size: ${(p) => (p.type === "cart" ? "1.13rem" : "inherit")};
-  }
-
-  .product-brand {
-    font-weight: ${(p) => (p.type === "cart" ? "600" : "300")};
-  }
-  .product-name {
-    font-weight: ${(p) => (p.type === "cart" ? "400" : "300")};
-  }
-`;
 
 const CartItemStyled = styled.div<StyleProps>`
   padding: 1.25rem 0;
@@ -81,8 +68,8 @@ export class CartItemViewer extends Component<
       <CartItemStyled className="split space-between" type={this.props.type}>
         <ProductInfo className="flow-content" type={this.props.type}>
           <ProductTitle className="flow-content" type={this.props.type}>
-            <span className="product-brand">{this.props.cartItem.brand}</span>
-            <span className="product-name">{this.props.cartItem.name}</span>
+            <span>{this.props.cartItem.brand}</span>
+            <span>{this.props.cartItem.name}</span>
           </ProductTitle>
           {this.props.type !== "added-to-cart-modal" && (
             <PriceViewer
@@ -200,8 +187,8 @@ export class ModalProductViewer extends Component<
       <ModalProductStyled className="split space-between">
         <ProductInfo className="flow-content" type={type}>
           <ProductTitle className="flow-content" type={type}>
-            <span className="product-brand">{this.props.product.brand}</span>
-            <span className="product-name">{this.props.product.name}</span>
+            <span>{this.props.product.brand}</span>
+            <span>{this.props.product.name}</span>
           </ProductTitle>
           <Price type={type}>
             <h4 className="section-title">Price: </h4>

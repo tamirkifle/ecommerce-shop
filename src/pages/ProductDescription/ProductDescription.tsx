@@ -7,7 +7,7 @@ import { Product, SelectedAttribute, SelectedAttributes } from "../../types";
 import { addToCart } from "../../store/actions";
 import { PRODUCT__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
-import { PageTitle } from "../../components/commonStyles";
+import { PageTitle, ProductTitle } from "../../components/commonStyles";
 import LoadingProductDescription from "../../components/loading/LoadingProductDescription";
 import PriceViewer from "../../components/PriceViewer";
 
@@ -26,17 +26,6 @@ const ProductDetails = styled.div`
   margin-top: 1rem;
   & > * {
     --flex-spacer: 2rem;
-  }
-`;
-const ProductTitle = styled.section`
-  & > * {
-    --flow-spacer: 0.8rem;
-  }
-  .product-brand {
-    font-weight: 600;
-  }
-  .product-name {
-    font-weight: 400;
   }
 `;
 
@@ -138,9 +127,9 @@ class ProductDescription extends Component<
       <ProductDescriptionStyled className="split">
         <ImageViewer images={this.state.currentProduct.gallery} />
         <ProductDetails className="split-column">
-          <ProductTitle className="flow-content">
-            <h2 className="product-brand">{this.state.currentProduct.brand}</h2>
-            <h2 className="product-name">{this.state.currentProduct.name}</h2>
+          <ProductTitle className="flow-content" type="pdp">
+            <span>{this.state.currentProduct.brand}</span>
+            <span>{this.state.currentProduct.name}</span>
           </ProductTitle>
           {this.state.currentProduct.attributes.map((attribute) => (
             <AttributeInput

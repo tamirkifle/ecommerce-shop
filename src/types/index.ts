@@ -54,6 +54,7 @@ export type Category = {
   name: string;
 };
 
+export type ProductViewerTypes = "pdp" | "modal";
 export type CartViewerTypes = "added-to-cart-modal" | "minicart" | "cart";
 export type TotalViewerTypes = "minicart" | "cart";
 export type PriceViewerTypes =
