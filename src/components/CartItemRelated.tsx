@@ -1,19 +1,18 @@
 import styled from "@emotion/styled";
 import { Component } from "react";
-import { withStore, WithStoreProps } from "../graphql/withStore";
 import { setQuantity } from "../store/actions";
 import {
   CartItem,
+  CartViewerTypes,
   Product,
   SelectedAttribute,
   SelectedAttributes,
+  TotalViewerTypes,
 } from "../types";
 import { AttributeInput, AttributeViewer } from "./AttributeRelated";
 import MiniImageSlider from "./MiniImageSlider";
 import QuantityCounter from "./QuantityCounter";
-
-type CartViewerTypes = "added-to-cart-modal" | "minicart" | "cart";
-type TotalViewerTypes = "minicart" | "cart";
+import PriceViewer from "./PriceViewer";
 
 interface StyleProps {
   type?: CartViewerTypes;
@@ -67,19 +66,17 @@ const ModalProductStyled = styled.div`
   padding: 1.25rem 0;
 `;
 
-interface CartItemViewerBaseOwnProps {
+interface CartItemViewerProps {
   cartItem: CartItem;
   type: CartViewerTypes;
 }
-
 interface CartItemViewerState {}
-type CartItemViewerProps = CartItemViewerBaseOwnProps & WithStoreProps;
-class CartItemViewerBase extends Component<
+
+export class CartItemViewer extends Component<
   CartItemViewerProps,
   CartItemViewerState
 > {
   render() {
-    const { pageCurrency } = this.props.storeVar;
     return (
       <CartItemStyled className="split space-between" type={this.props.type}>
         <ProductInfo className="flow-content" type={this.props.type}>
@@ -88,16 +85,11 @@ class CartItemViewerBase extends Component<
             <span className="product-name">{this.props.cartItem.name}</span>
           </ProductTitle>
           {this.props.type !== "added-to-cart-modal" && (
-            <Price type={this.props.type}>
-              {pageCurrency.symbol}
-              {Math.round(
-                (this.props.cartItem.prices.find(
-                  (price) => price.currency.label === pageCurrency.label
-                )?.amount || 0) *
-                  this.props.cartItem.quantity *
-                  100
-              ) / 100}
-            </Price>
+            <PriceViewer
+              priceData={this.props.cartItem.prices}
+              quantity={this.props.cartItem.quantity}
+              type={this.props.type}
+            />
           )}
           <Attributes className="flow-content">
             {Array.from(this.props.cartItem.selectedAttributes.values()).map(
@@ -163,8 +155,6 @@ class CartItemViewerBase extends Component<
   }
 }
 
-export const CartItemViewer = withStore(CartItemViewerBase);
-
 interface TotalStyledProps {
   type?: TotalViewerTypes;
 }
@@ -173,49 +163,38 @@ const TotalStyled = styled.div<TotalStyledProps>`
   font-size: ${(p) => (p.type === "cart" ? "1.5rem" : "inherit")};
   font-weight: 700;
 `;
-interface TotalViewerBaseOwnProps {
+interface TotalViewerProps {
   type: TotalViewerTypes;
   total: number;
 }
+interface TotalViewerState {}
 
-interface TotalViewerBaseState {}
-
-type TotalViewerBaseProps = TotalViewerBaseOwnProps & WithStoreProps;
-class TotalViewerBase extends Component<
-  TotalViewerBaseProps,
-  TotalViewerBaseState
-> {
+export class TotalViewer extends Component<TotalViewerProps, TotalViewerState> {
   render() {
-    const { pageCurrency } = this.props.storeVar;
-
     return (
       <TotalStyled className="split space-between" type={this.props.type}>
         <p>Total: </p>
-        <Price>
-          {pageCurrency.symbol}
-          {this.props.total}
-        </Price>
+        <PriceViewer
+          priceData={this.props.total}
+          type={this.props.type === "minicart" ? "minicartTotal" : "cartTotal"}
+        />
       </TotalStyled>
     );
   }
 }
 
-export const TotalViewer = withStore(TotalViewerBase);
-
-interface ModalProductViewerBaseOwnProps {
+interface ModalProductViewerProps {
   product: Product;
   selectedAttributes: SelectedAttributes;
   setSelectedAttributes: (selectedAttribute: SelectedAttribute) => void;
 }
-
 interface ModalProductViewerState {}
-type ModalProductViewerProps = ModalProductViewerBaseOwnProps & WithStoreProps;
-class ModalProductViewerBase extends Component<
+
+export class ModalProductViewer extends Component<
   ModalProductViewerProps,
   ModalProductViewerState
 > {
   render() {
-    const { pageCurrency } = this.props.storeVar;
     const type = "minicart";
     return (
       <ModalProductStyled className="split space-between">
@@ -226,14 +205,7 @@ class ModalProductViewerBase extends Component<
           </ProductTitle>
           <Price type={type}>
             <h4 className="section-title">Price: </h4>
-            <p className="section-main">
-              {pageCurrency.symbol}
-              {
-                this.props.product.prices.find(
-                  (price) => price.currency.label === pageCurrency.label
-                )?.amount
-              }
-            </p>
+            <PriceViewer priceData={this.props.product.prices} type={type} />
           </Price>
           <Attributes className="flow-content">
             <p>Please choose attributes:</p>
@@ -264,5 +236,3 @@ class ModalProductViewerBase extends Component<
     );
   }
 }
-
-export const ModalProductViewer = withStore(ModalProductViewerBase);

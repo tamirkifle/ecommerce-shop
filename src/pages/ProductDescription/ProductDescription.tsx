@@ -4,13 +4,12 @@ import ImageViewer from "../../components/ImageViewer";
 import { AttributeInput } from "../../components/AttributeRelated";
 import { withRouter, WithRouterProps } from "../../utils/withRouter";
 import { Product, SelectedAttribute, SelectedAttributes } from "../../types";
-import { withStore, WithStoreProps } from "../../graphql/withStore";
 import { addToCart } from "../../store/actions";
 import { PRODUCT__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 import { PageTitle } from "../../components/commonStyles";
 import LoadingProductDescription from "../../components/loading/LoadingProductDescription";
-import numberFormatter from "../../utils/numberFormatter";
+import PriceViewer from "../../components/PriceViewer";
 
 const ProductDescriptionStyled = styled.div`
   & > * {
@@ -39,11 +38,6 @@ const ProductTitle = styled.section`
   .product-name {
     font-weight: 400;
   }
-`;
-
-const Price = styled.section`
-  font-size: 24px;
-  font-weight: 700;
 `;
 
 const AddToCartButton = styled.button`
@@ -76,9 +70,7 @@ type ProductDescriptionState = {
 };
 
 type ProductDescriptionProps = WithClientProps &
-  WithRouterProps<ProductDescriptionRouteParams, ProductDescriptionRouteState> &
-  WithStoreProps;
-
+  WithRouterProps<ProductDescriptionRouteParams, ProductDescriptionRouteState>;
 class ProductDescription extends Component<
   ProductDescriptionProps,
   ProductDescriptionState
@@ -142,8 +134,6 @@ class ProductDescription extends Component<
   };
 
   render() {
-    const { pageCurrency } = this.props.storeVar;
-
     return this.state.currentProduct ? (
       <ProductDescriptionStyled className="split">
         <ImageViewer images={this.state.currentProduct.gallery} />
@@ -162,17 +152,13 @@ class ProductDescription extends Component<
               setSelectedAttributes={this.setSelectedAttributes}
             />
           ))}
-          <Price>
-            <h4 className="section-title">Price: </h4>
-            <p className="section-main">
-              {pageCurrency.symbol}
-              {
-                this.state.currentProduct.prices.find(
-                  (price) => price.currency.label === pageCurrency.label
-                )?.amount
-              }
-            </p>
-          </Price>
+          <div className="flow-content">
+            <PriceTitle>Price: </PriceTitle>
+            <PriceViewer
+              priceData={this.state.currentProduct.prices}
+              type="pdp"
+            />
+          </div>
           <AddToCartButton
             onClick={() =>
               this.state.currentProduct?.inStock && this.addToCart()
@@ -200,4 +186,4 @@ class ProductDescription extends Component<
   }
 }
 
-export default withClient(withStore(withRouter(ProductDescription)));
+export default withClient(withRouter(ProductDescription));

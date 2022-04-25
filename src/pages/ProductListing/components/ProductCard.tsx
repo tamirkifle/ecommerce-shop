@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
 import { Component, MouseEventHandler } from "react";
 import { ReactComponent as CartIcon } from "../../../assets/empty_cart_white.svg";
-import { Product, Price } from "../../../types";
+import { Product } from "../../../types";
 import { renderAttributeModal } from "../../../store/modalBuilders";
 import { addToCart } from "../../../store/actions";
+import PriceViewer from "../../../components/PriceViewer";
 
 const Card = styled.div`
   --card-image-height: 330px;
@@ -69,10 +70,6 @@ const CardBody = styled.div`
     font-size: 1.125rem;
     line-height: 1.6;
   }
-
-  .price {
-    font-weight: 500;
-  }
 `;
 
 const CartButton = styled.button`
@@ -91,24 +88,9 @@ type ProductCardProps = {
   product: Product;
   handleClick: MouseEventHandler<HTMLDivElement>;
 };
-
-class ProductCard extends Component<ProductCardProps> {
-  state = { priceWithCurrency: null };
-  componentDidMount() {
-    let price = this.props.product.prices.find(
-      (price: Price) => price.currency.label === "USD"
-    );
-    if (!price) {
-      price = this.props.product.prices.find(
-        (price: Price) => price.currency.label === "USD"
-      );
-    }
-    this.setState({
-      priceWithCurrency: `${price?.currency.symbol}${price?.amount}`,
-    });
-  }
+type ProductCardState = {};
+class ProductCard extends Component<ProductCardProps, ProductCardState> {
   render() {
-    const { product } = this.props;
     return (
       <Card
         onClick={this.props.handleClick}
@@ -116,16 +98,15 @@ class ProductCard extends Component<ProductCardProps> {
       >
         <ImageContainer className="image-container">
           <img
-            src={product.gallery[0]}
-            alt={product.name}
-            style={{ width: "100%" }}
+            src={this.props.product.gallery[0]}
+            alt={this.props.product.name}
           />
         </ImageContainer>
         <CardBody className="flow-content">
           <h3 className="title">
-            {product.brand} {product.name}
+            {this.props.product.brand} {this.props.product.name}
           </h3>
-          <p className="price">{this.state.priceWithCurrency}</p>
+          <PriceViewer priceData={this.props.product.prices} type="card" />
         </CardBody>
 
         <CartButton
