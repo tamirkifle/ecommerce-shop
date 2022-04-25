@@ -67,6 +67,8 @@ const NavButtons = styled.div`
 
 const NavOverlay = styled.div`
   position: absolute;
+  margin: 0;
+  padding: 0;
   z-index: 1;
   left: 0;
   width: 100%;
