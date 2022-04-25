@@ -10,29 +10,31 @@ import { PRODUCT__QUERY } from "../../graphql/queries";
 import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 import { PageTitle } from "../../components/commonStyles";
 import LoadingProductDescription from "../../components/loading/LoadingProductDescription";
+import numberFormatter from "../../utils/numberFormatter";
 
 const ProductDescriptionStyled = styled.div`
-  display: flex;
-  .section-title {
-    font-family: var(--ff-roboto-c, "sans-serif");
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .section-main {
-    margin-top: 0.5rem;
+  & > * {
+    --flex-spacer: 2rem;
+    flex-basis: 100%;
   }
 `;
+const PriceTitle = styled.p`
+  font-family: var(--ff-roboto-c, "sans-serif");
+  font-weight: 700;
+  text-transform: uppercase;
+`;
 const ProductDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  & > * + * {
-    margin-top: 2rem;
+  margin-top: 1rem;
+  & > * {
+    --flex-spacer: 2rem;
   }
 `;
 const ProductTitle = styled.section`
+  & > * {
+    --flow-spacer: 0.8rem;
+  }
   .product-brand {
     font-weight: 600;
-    margin-bottom: 0.8rem;
   }
   .product-name {
     font-weight: 400;
@@ -40,17 +42,16 @@ const ProductTitle = styled.section`
 `;
 
 const Price = styled.section`
-  .section-main {
-    font-size: 24px;
-    font-weight: 700;
-  }
+  font-size: 24px;
+  font-weight: 700;
 `;
+
 const AddToCartButton = styled.button`
   text-transform: uppercase;
   padding: 1rem 0;
   background-color: var(--accent, green);
   color: white;
-  width: 400px;
+  max-width: 400px;
   &:disabled {
     background-color: #96d7a7;
     cursor: not-allowed;
@@ -144,10 +145,10 @@ class ProductDescription extends Component<
     const { pageCurrency } = this.props.storeVar;
 
     return this.state.currentProduct ? (
-      <ProductDescriptionStyled className="flow-content">
+      <ProductDescriptionStyled className="split">
         <ImageViewer images={this.state.currentProduct.gallery} />
-        <ProductDetails>
-          <ProductTitle>
+        <ProductDetails className="split-column">
+          <ProductTitle className="flow-content">
             <h2 className="product-brand">{this.state.currentProduct.brand}</h2>
             <h2 className="product-name">{this.state.currentProduct.name}</h2>
           </ProductTitle>

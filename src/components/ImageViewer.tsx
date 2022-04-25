@@ -2,42 +2,44 @@ import styled from "@emotion/styled";
 import { Component, createRef } from "react";
 
 const ViewerContainer = styled.div`
-  --viewerwh: 37.5rem;
-  --previewwh: 5rem;
-  --previewMargin: 2.5rem;
-  /* visibleThumbs = (viewerwh - previewMargin) / (previewwh + previewMargin) = 6.333 , so 6 images will show */
-  display: flex;
-  /* width: 800px; */
-  max-height: var(--viewerwh);
-  /* outline: 1px dashed red; */
-
-  & > * + * {
-    margin-left: 2.5rem;
+  --max-viewer-wh: 600px;
+  --min-viewer-wh: 400px;
+  --preview-wh: 80px;
+  --previewMargin: 0.5rem;
+  & > * {
+    --flex-spacer: 2.5rem;
   }
+  max-height: var(--max-viewer-wh);
+  min-height: var(--min-viewer-wh);
+  height: calc(100vh - 200px);
 `;
 
 const PreviewBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: var(--previewwh);
-  & > * + * {
-    margin-top: 0.5rem;
+  & > * {
+    --flex-spacer: 0.5rem;
   }
+  width: var(--preview-wh);
+`;
 
-  button {
-    border: 1px solid grey;
-    width: 100%;
-    padding: 5px 0;
-  }
+const ScrollButton = styled.button`
+  border: 1px solid #ccc;
   svg {
-    stroke: grey;
+    stroke: #3665f3;
+  }
+  width: 100%;
+  padding: 1rem 0;
+  &:disabled {
+    svg {
+      stroke: #ccc;
+    }
   }
 `;
 
 const PreviewImages = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow: scroll;
+  & > * {
+    --flex-spacer: var(--previewMargin);
+  }
+  overflow-y: scroll;
   scrollbar-width: none;
   ::-webkit-scrollbar {
     width: 0; /* Remove scrollbar space */
@@ -46,15 +48,10 @@ const PreviewImages = styled.div`
 
   width: var(--previewwh);
 
-  & > * + * {
-    margin-top: var(--previewMargin);
-  }
-
   img {
     width: 100%;
-    height: var(--previewwh);
+    min-height: var(--preview-wh);
     object-fit: contain;
-    /* outline: 1px solid green; */
     position: relative;
     cursor: pointer;
   }
@@ -64,15 +61,16 @@ const PreviewImages = styled.div`
 `;
 
 const CurrentImageWindow = styled.div`
-  /* flex-basis: 90%; */
-  /* background-color: green; */
-  width: var(--viewerwh);
-  height: var(--viewerwh);
+  max-width: var(--max-viewer-wh);
+  max-height: var(--max-viewer-wh);
+  min-width: var(--min-viewer-wh);
+  min-height: var(--min-viewer-wh);
+  width: calc(100vh - 200px);
+  height: calc(100vh - 200px);
   img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* outline: 1px dashed red; */
   }
 `;
 interface ImageViewerProps {
@@ -81,33 +79,88 @@ interface ImageViewerProps {
 
 interface ImageViewerState {
   selectedIndex: number;
+  showScrollButtons: boolean;
 }
 //TODO: No Image
 class ImageViewer extends Component<ImageViewerProps, ImageViewerState> {
-  state: ImageViewerState = { selectedIndex: 0 };
+  state: ImageViewerState = { selectedIndex: 0, showScrollButtons: false };
   previewImagesRef: React.RefObject<HTMLDivElement> = createRef();
+  previewBoxRef: React.RefObject<HTMLDivElement> = createRef();
+  topButtonRef: React.RefObject<HTMLButtonElement> = createRef();
+  bottomButtonRef: React.RefObject<HTMLButtonElement> = createRef();
+
+  updateShowScrollButtons = () => {
+    const previewsScrollHeight = this.previewImagesRef.current?.scrollHeight;
+    const previewBoxHeight = this.previewBoxRef.current?.clientHeight;
+    if (previewsScrollHeight && previewBoxHeight) {
+      const newShowScrollButtons = Boolean(
+        previewsScrollHeight > previewBoxHeight
+      );
+      if (newShowScrollButtons !== this.state.showScrollButtons) {
+        this.setState((oldState) => ({
+          ...oldState,
+          showScrollButtons: newShowScrollButtons,
+        }));
+      }
+    }
+  };
+
+  updateButtonsDisable = () => {
+    if (
+      this.topButtonRef.current &&
+      this.bottomButtonRef.current &&
+      this.topButtonRef.current &&
+      this.previewImagesRef.current
+    ) {
+      this.topButtonRef.current.disabled =
+        this.previewImagesRef.current.scrollTop === 0;
+      this.bottomButtonRef.current.disabled =
+        this.previewImagesRef.current.scrollTop +
+          this.previewImagesRef.current.clientHeight ===
+        this.previewImagesRef.current.scrollHeight;
+    }
+  };
+  componentDidMount() {
+    this.updateShowScrollButtons();
+    // this.updateButtonsDisable();
+    window.addEventListener("resize", this.updateShowScrollButtons, false);
+  }
+
+  componentDidUpdate(prevProps: ImageViewerProps, prevState: ImageViewerState) {
+    if (!prevState.showScrollButtons && this.state.showScrollButtons) {
+      this.updateButtonsDisable();
+    }
+  }
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateShowScrollButtons, false);
+  }
+
   render() {
-    const visibleImgs = 5; //(600px + 40px) / (80px + 40px) rounded down
     return (
-      <ViewerContainer>
-        <PreviewBox>
-          {visibleImgs < this.props.images.length && (
-            <button
+      <ViewerContainer className="split">
+        <PreviewBox
+          ref={this.previewBoxRef}
+          className="split-column space-between"
+        >
+          {this.state.showScrollButtons && (
+            <ScrollButton
               onClick={() =>
-                this.previewImagesRef.current &&
-                this.previewImagesRef.current.scrollBy({
+                this.previewImagesRef.current?.scrollBy({
                   top: -240,
                   behavior: "smooth",
                 })
               }
+              ref={this.topButtonRef}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                 <path d="m12 6.586-8.707 8.707 1.414 1.414L12 9.414l7.293 7.293 1.414-1.414L12 6.586z" />
               </svg>
-            </button>
+            </ScrollButton>
           )}
           <PreviewImages
-            ref={this.previewImagesRef as React.RefObject<HTMLDivElement>}
+            ref={this.previewImagesRef}
+            onScroll={this.updateButtonsDisable}
+            className="split-column"
           >
             {this.props.images.map((imgUrl, index) => (
               <img
@@ -119,8 +172,8 @@ class ImageViewer extends Component<ImageViewerProps, ImageViewerState> {
               />
             ))}
           </PreviewImages>
-          {visibleImgs < this.props.images.length && (
-            <button
+          {this.state.showScrollButtons && (
+            <ScrollButton
               onClick={() =>
                 this.previewImagesRef.current &&
                 this.previewImagesRef.current.scrollBy({
@@ -128,11 +181,12 @@ class ImageViewer extends Component<ImageViewerProps, ImageViewerState> {
                   behavior: "smooth",
                 })
               }
+              ref={this.bottomButtonRef}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                 <path d="M12 17.414 3.293 8.707l1.414-1.414L12 14.586l7.293-7.293 1.414 1.414L12 17.414z" />
               </svg>
-            </button>
+            </ScrollButton>
           )}
         </PreviewBox>
         <CurrentImageWindow>
