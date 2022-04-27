@@ -47,11 +47,6 @@ export const addToCart = (
       throw new OutOfStockError("Item is out of stock.");
     }
     const oldState = globalStore();
-    const itemIndex = indexOfItemInCart(cartItemToAdd, oldState.cartItems);
-    if (itemIndex !== -1) {
-      throw new AlreadyInCartError("Item is already in the cart");
-    }
-
     const newState = {
       ...oldState,
       cartItems: [...oldState.cartItems, cartItemToAdd],
@@ -75,39 +70,20 @@ export const addToCart = (
   }
 };
 
-const indexOfItemInCart = (cartItem: CartItem, cartItems: CartItem[]) => {
-  return cartItems.findIndex((oldCartItem) => {
-    //Check if they are the from the same item
-    const sameItem = oldCartItem.id === cartItem.id;
-    if (!sameItem) {
-      return false;
-    }
-    //Check if all selected attributes are the same value
-    let allSameAttributes = true;
-    for (const [key, value] of cartItem.selectedAttributes) {
-      const oldSelectedAttributes = oldCartItem.selectedAttributes.get(key);
-      if (
-        !oldSelectedAttributes ||
-        (oldSelectedAttributes.id === value.id &&
-          oldSelectedAttributes.item.id !== value.item.id)
-      ) {
-        allSameAttributes = false;
-        break;
-      }
-    }
-    return allSameAttributes ? true : false;
-  });
-};
-
 export const setQuantity = (cartItem: CartItem, newQuantity: number) => {
   const oldStore = globalStore();
   const cartItemsCopy = [...oldStore.cartItems];
+  const itemIndex = cartItemsCopy.findIndex(
+    (cItem) => cItem.id === cartItem.id
+  );
+  if (itemIndex === -1) {
+    throw new Error(
+      "Item is not really in the cart, try refreshing your page."
+    );
+  }
   if (newQuantity === 0) {
     const removeItem = () => {
-      const itemIndex = indexOfItemInCart(cartItem, cartItemsCopy);
-      if (itemIndex !== -1) {
-        cartItemsCopy.splice(itemIndex, 1);
-      }
+      cartItemsCopy.splice(itemIndex, 1);
       globalStore({ ...oldStore, cartItems: cartItemsCopy });
       saveCartOnLocalStorage(cartItemsCopy);
       return;
@@ -121,10 +97,7 @@ export const setQuantity = (cartItem: CartItem, newQuantity: number) => {
     );
     return;
   }
-  const itemIndex = indexOfItemInCart(cartItem, cartItemsCopy);
-  if (itemIndex !== -1) {
-    cartItemsCopy[itemIndex].quantity = newQuantity;
-  }
+  cartItemsCopy[itemIndex].quantity = newQuantity;
   const newStore = { ...oldStore, cartItems: cartItemsCopy };
   saveCartOnLocalStorage(newStore.cartItems);
   globalStore(newStore);

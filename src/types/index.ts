@@ -41,6 +41,7 @@ export type SelectedAttributes = Map<string, SelectedAttribute>;
 
 export type CartItem = {
   id: string;
+  productId: string;
   brand: string;
   name: string;
   inStock: boolean;
