@@ -78,20 +78,25 @@ export class CartItemViewer extends Component<
             />
           )}
           <Attributes className="flow-content">
-            {Array.from(this.props.cartItem.selectedAttributes.values()).map(
-              (sAttribute) =>
-                this.props.type === "cart" ? (
-                  <AttributeViewer
-                    key={sAttribute.id}
-                    selectedAttribute={sAttribute}
-                  />
-                ) : (
-                  <AttributeViewer
-                    key={sAttribute.id}
-                    selectedAttribute={sAttribute}
-                    mini
-                  />
-                )
+            {this.props.cartItem.attributes.map((attribute) =>
+              this.props.type === "cart" ? (
+                <AttributeViewer
+                  key={attribute.id}
+                  attribute={attribute}
+                  selectedAttribute={this.props.cartItem.selectedAttributes.get(
+                    attribute.id
+                  )}
+                />
+              ) : (
+                <AttributeViewer
+                  key={attribute.id}
+                  attribute={attribute}
+                  selectedAttribute={this.props.cartItem.selectedAttributes.get(
+                    attribute.id
+                  )}
+                  mini
+                />
+              )
             )}
           </Attributes>
         </ProductInfo>

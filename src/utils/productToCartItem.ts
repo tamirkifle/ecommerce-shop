@@ -13,5 +13,6 @@ export const productToCartItem = (
   prices: product.prices,
   gallery: product.gallery,
   quantity: 1,
+  attributes: product.attributes,
   selectedAttributes: selectedAttributes,
 });

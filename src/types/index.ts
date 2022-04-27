@@ -48,6 +48,7 @@ export type CartItem = {
   quantity: number;
   gallery: string[];
   prices: Price[];
+  attributes: Attribute[];
   selectedAttributes: SelectedAttributes;
 };
 

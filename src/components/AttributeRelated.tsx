@@ -18,18 +18,30 @@ const AttributeTitle = styled.p<TypeProps>`
   text-transform: uppercase;
 `;
 
-const Chooser = styled.div<TypeProps>`
-  --flex-spacer: ${(p) => (p.mini ? "0.75rem" : "1.25rem")};
+const AttributeGroup = styled.div<TypeProps>`
+  --flex-spacer: ${(p) => (p.mini ? "0.625rem" : "0.75rem")};
 `;
 
 const AttributeItemStyled = styled.button<TypeProps>`
-  min-width: ${(p) => (p.mini ? "24px" : "63px")};
-  min-height: ${(p) => (p.mini ? "24px" : "45px")};
-  padding: ${(p) => (p.mini ? "3px 6px" : "0.7rem 1rem")};
+  min-width: ${(p) => (p.swatch ? "32px" : p.mini ? "24px" : "63px")};
+  min-height: ${(p) => (p.swatch ? "32px" : p.mini ? "24px" : "45px")};
+
+  padding: ${(p) => (p.swatch ? 0 : p.mini ? "3px 6px" : "0.7rem 1rem")};
   font-size: ${(p) => p.mini && "14px"};
-  background-color: ${(p) => (p.swatch ? p.swatch : "transparent")};
+  background: ${(p) =>
+    p.swatch
+      ? `${p.swatch} content-box`
+      : p.viewer && p.mini
+      ? "#e9e9e9"
+      : "transparent"};
+  color: ${(p) => (p.viewer && p.mini ? "#8c8c8c" : "var(--dark, black)")};
   border: 1px solid
-    ${(p) => (p.viewer && p.mini ? "#A6A6A6" : "var(--dark, black)")};
+    ${(p) =>
+      p.swatch
+        ? "transparent"
+        : p.viewer && p.mini
+        ? "#A6A6A6"
+        : "var(--dark, black)"};
   font-family: var(--ff-source-s, "sans-serif");
   font-weight: 400;
   position: relative;
@@ -37,16 +49,18 @@ const AttributeItemStyled = styled.button<TypeProps>`
   &.clickable {
     cursor: pointer;
   }
-  &.selected:not(.swatch) {
-    background-color: ${(p) =>
-      p.viewer && p.mini ? "#e9e9e9" : "var(--dark, black)"};
-    color: ${(p) => (p.viewer && p.mini ? "#8c8c8c" : "white")};
-  }
   &.selected {
-    transform: ${(p) => (p.viewer ? "scale(1)" : "scale(1.2)")};
+    padding: ${(p) => p.swatch && "2px"};
+    background-color: ${(p) => !p.swatch && "var(--dark, black)"};
+    color: white;
+    border: ${(p) =>
+      p.swatch ? "1px solid #5ece7b" : "1px solid var(--dark, black)"};
+    transform: ${(p) => (p.swatch ? "scale(1.1)" : "scale(1)")};
   }
-  &.swatch.selected::after {
-    display: ${(p) => (p.viewer ? "none" : "block")};
+  /* &.swatch.selected::after {
+    display: ${(p) => (p.viewer ? "none" : "flex")};
+    justify-content: center;
+    align-items: center;
     content: "✓";
     opacity: 80%;
     color: white;
@@ -56,8 +70,7 @@ const AttributeItemStyled = styled.button<TypeProps>`
     left: 0;
     bottom: 0;
     right: 0;
-    line-height: ${(p) => (p.mini ? "24px" : "45px")};
-  }
+  } */
 `;
 
 interface AttributeInputProps {
@@ -88,7 +101,7 @@ export class AttributeInput extends Component<
     return (
       <AttributeInputStyled className="flow-content">
         <AttributeTitle>{attribute.name}:</AttributeTitle>
-        <Chooser className="split" mini={this.props.mini}>
+        <AttributeGroup className="split" mini={this.props.mini}>
           {attribute.items.map((item) => (
             <AttributeOption
               key={item.id}
@@ -99,7 +112,7 @@ export class AttributeInput extends Component<
               mini={this.props.mini}
             />
           ))}
-        </Chooser>
+        </AttributeGroup>
       </AttributeInputStyled>
     );
   }
@@ -139,22 +152,27 @@ export class AttributeOption extends Component<AttributeOptionProps> {
 }
 
 interface AttributeViewerProps {
-  selectedAttribute: SelectedAttribute;
+  attribute: Attribute;
+  selectedAttribute: SelectedAttribute | undefined;
   mini?: boolean;
 }
 export class AttributeViewer extends Component<AttributeViewerProps> {
   render() {
     return (
       <AttributeInputStyled className="flow-content">
-        <AttributeTitle>{this.props.selectedAttribute.name}:</AttributeTitle>
-        <AttributeOption
-          key={this.props.selectedAttribute.id}
-          attribute={this.props.selectedAttribute}
-          attributeItem={this.props.selectedAttribute.item}
-          isSelected={true}
-          mini={this.props.mini}
-          viewer={true}
-        />
+        <AttributeTitle>{this.props.attribute.name}:</AttributeTitle>
+        <AttributeGroup className="split" mini={this.props.mini}>
+          {this.props.attribute.items.map((item) => (
+            <AttributeOption
+              key={item.id}
+              attribute={this.props.attribute}
+              attributeItem={item}
+              isSelected={this.props.selectedAttribute?.item.id === item.id}
+              mini={this.props.mini}
+              viewer
+            />
+          ))}
+        </AttributeGroup>
       </AttributeInputStyled>
     );
   }
