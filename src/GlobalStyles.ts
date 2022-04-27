@@ -131,6 +131,9 @@ const GlobalStyles = css`
   .bold {
     font-weight: 700;
   }
+  .mediumbold {
+    font-weight: 500;
+  }
 `;
 
 export default GlobalStyles;

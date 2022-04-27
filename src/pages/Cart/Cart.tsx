@@ -3,7 +3,9 @@ import { Component } from "react";
 import { Link } from "react-router-dom";
 import { withStore, WithStoreProps } from "../../graphql/withStore";
 import { CartItemViewer, TotalViewer } from "../../components/CartItemRelated";
-import calculateTotal from "../../utils/calculateTotal";
+import calculateTotal, {
+  calculateTotalQuantity,
+} from "../../utils/calculateTotal";
 
 const CartStyled = styled.div`
   --flex-spacer: 1rem;
@@ -50,7 +52,9 @@ class Cart extends Component<CartProps, CartState> {
               />
             ))}
             <TotalViewer
-              total={calculateTotal(cartItems, pageCurrency)}
+              totalWithoutTax={calculateTotal(cartItems, pageCurrency)}
+              totalQuantity={calculateTotalQuantity(cartItems)}
+              taxRate={0.15}
               type="cart"
             />
           </>

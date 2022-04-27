@@ -9,6 +9,7 @@ interface StyleProps {
   type: PriceViewerTypes;
 }
 const PriceStyled = styled.div<StyleProps>`
+  display: inline-block;
   font-size: ${(props) => {
     switch (props.type) {
       case "card":

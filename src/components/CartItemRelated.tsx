@@ -14,6 +14,7 @@ import MiniImageSlider from "./MiniImageSlider";
 import QuantityCounter from "./QuantityCounter";
 import PriceViewer from "./PriceViewer";
 import { ProductTitle } from "./commonStyles";
+import { renderErrorModal } from "../store/modalBuilders";
 
 interface StyleProps {
   type?: CartViewerTypes;
@@ -133,25 +134,99 @@ interface TotalStyledProps {
   type?: TotalViewerTypes;
 }
 const TotalStyled = styled.div<TotalStyledProps>`
+  & > * {
+    --flow-spacer: 1rem;
+  }
   padding: 1.25rem 0;
   font-size: ${(p) => (p.type === "cart" ? "1.5rem" : "inherit")};
-  font-weight: 700;
+  font-weight: 400;
 `;
+const OrderButton = styled.button<TotalStyledProps>`
+  text-transform: uppercase;
+  padding: 1rem 0;
+  background-color: var(--accent, green);
+  color: white;
+  width: 100%;
+  max-width: 300px;
+  &:disabled {
+    background-color: #96d7a7;
+    cursor: not-allowed;
+  }
+`;
+const PricesContainer = styled.div<TotalStyledProps>`
+  & > * {
+    --flow-spacer: 1rem;
+  }
+`;
+const TaxQtyContainer = styled.div<TotalStyledProps>`
+  & > * {
+    --flow-spacer: 0.5rem;
+    justify-content: ${(p) => p.type === "minicart" && "space-between"};
+  }
+`;
+const TotalContainer = styled.div<TotalStyledProps>`
+  & > * {
+    justify-content: ${(p) => p.type === "minicart" && "space-between"};
+  }
+`;
+
 interface TotalViewerProps {
   type: TotalViewerTypes;
-  total: number;
+  totalWithoutTax: number;
+  taxRate: number;
+  totalQuantity: number;
 }
 interface TotalViewerState {}
 
 export class TotalViewer extends Component<TotalViewerProps, TotalViewerState> {
   render() {
     return (
-      <TotalStyled className="split space-between" type={this.props.type}>
-        <p>Total: </p>
-        <PriceViewer
-          priceData={this.props.total}
-          type={this.props.type === "minicart" ? "minicartTotal" : "cartTotal"}
-        />
+      <TotalStyled className="flow-content" type={this.props.type}>
+        <PricesContainer className="flow-content">
+          <TaxQtyContainer className="flow-content" type={this.props.type}>
+            <div className="split">
+              <span>Tax ({this.props.taxRate * 100}% ): </span>
+              <PriceViewer
+                priceData={this.props.totalWithoutTax * this.props.taxRate}
+                type={
+                  this.props.type === "minicart" ? "minicartTotal" : "cartTotal"
+                }
+              />
+            </div>
+            <div className="split">
+              <span>Qty: </span>
+              <span
+                className={this.props.type === "cart" ? "bold" : "mediumbold"}
+              >
+                {this.props.totalQuantity}
+              </span>
+            </div>
+          </TaxQtyContainer>
+          <TotalContainer type={this.props.type}>
+            <div className="split">
+              <span className={this.props.type === "cart" ? "mediumbold" : ""}>
+                Total:{" "}
+              </span>
+              <PriceViewer
+                priceData={
+                  (1 + this.props.taxRate) * this.props.totalWithoutTax
+                }
+                type={
+                  this.props.type === "minicart" ? "minicartTotal" : "cartTotal"
+                }
+              />
+            </div>
+          </TotalContainer>
+        </PricesContainer>
+
+        {this.props.type === "cart" && (
+          <OrderButton
+            className="btn accent"
+            onClick={() => renderErrorModal("Coming Soon")}
+          >
+            Order
+          </OrderButton>
+        )}
       </TotalStyled>
     );
   }

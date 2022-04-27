@@ -7,7 +7,9 @@ import { ReactComponent as CartIcon } from "../assets/empty_cart.svg";
 import { Link } from "react-router-dom";
 import { CartItem } from "../types";
 import { CartItemViewer, TotalViewer } from "./CartItemRelated";
-import calculateTotal from "../utils/calculateTotal";
+import calculateTotal, {
+  calculateTotalQuantity,
+} from "../utils/calculateTotal";
 
 const MiniCartStyled = styled.div`
   --flex-spacer: 1rem;
@@ -127,7 +129,9 @@ class MiniCartDropdown extends Component<
               <CartFooter>
                 <TotalViewer
                   type="minicart"
-                  total={calculateTotal(cartItems, pageCurrency)}
+                  totalWithoutTax={calculateTotal(cartItems, pageCurrency)}
+                  totalQuantity={calculateTotalQuantity(cartItems)}
+                  taxRate={0.15}
                 />
 
                 <MinCartActionButtons className="split justify-stretch">
