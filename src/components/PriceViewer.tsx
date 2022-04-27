@@ -49,7 +49,8 @@ type PriceViewerProps = PriceViewerOwnProps & WithStoreProps;
 class PriceViewer extends Component<PriceViewerProps, PriceViewerState> {
   render() {
     const { pageCurrency } = this.props.storeVar;
-    return (
+    return this.props.type === "cartTotal" ||
+      this.props.type === "minicartTotal" ? (
       <PriceStyled type={this.props.type}>
         {typeof this.props.priceData === "number"
           ? currencyFormatter(
@@ -58,6 +59,18 @@ class PriceViewer extends Component<PriceViewerProps, PriceViewerState> {
             )
           : currencyFormatter(
               getPrice(this.props.priceData, pageCurrency, this.props.quantity),
+              pageCurrency
+            )}
+      </PriceStyled>
+    ) : (
+      <PriceStyled type={this.props.type}>
+        {typeof this.props.priceData === "number"
+          ? currencyFormatter(
+              getPrice(this.props.priceData, pageCurrency),
+              pageCurrency
+            )
+          : currencyFormatter(
+              getPrice(this.props.priceData, pageCurrency),
               pageCurrency
             )}
       </PriceStyled>

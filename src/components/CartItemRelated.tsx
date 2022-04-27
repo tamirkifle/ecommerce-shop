@@ -74,7 +74,6 @@ export class CartItemViewer extends Component<
           {this.props.type !== "added-to-cart-modal" && (
             <PriceViewer
               priceData={this.props.cartItem.prices}
-              quantity={this.props.cartItem.quantity}
               type={this.props.type}
             />
           )}
