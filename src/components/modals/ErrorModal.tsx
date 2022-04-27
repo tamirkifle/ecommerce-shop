@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { closeModal } from "../../store/actions";
+import parseHtml from "../../utils/parseHtml";
 import { ModalBaseStyled } from "../commonStyles";
 
 interface ErrorModalProps {
@@ -13,7 +14,7 @@ class ErrorModal extends Component<ErrorModalProps, ErrorModalState> {
     return (
       <ModalBaseStyled className="split-column justify-center">
         <div className="split align-center justify-center">
-          <p>{this.props.errorMessage}</p>
+          <p>{parseHtml(this.props.errorMessage)}</p>
         </div>
         <div className="action-buttons split flex-end align-end">
           <button className="btn" onClick={closeModal}>

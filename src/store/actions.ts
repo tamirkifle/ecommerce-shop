@@ -62,7 +62,7 @@ export const addToCart = (
       e instanceof AlreadyInCartError ||
       e instanceof MissingAttributeError
     ) {
-      renderErrorModal(e.message);
+      renderErrorModal(`<b>${e.message}</b>`);
       return false;
     } else {
       throw e;

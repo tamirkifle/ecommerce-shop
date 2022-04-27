@@ -1,4 +1,5 @@
 import { Component } from "react";
+import parseHtml from "../../utils/parseHtml";
 import { ModalBaseStyled } from "../commonStyles";
 
 interface ConfirmationModalProps {
@@ -20,7 +21,15 @@ class ConfirmationModal extends Component<
   render() {
     return (
       <ModalBaseStyled className="split-column justify-center">
-        <div>{this.props.confirmationMessage || <p>Are you sure?</p>}</div>
+        <div>
+          {!this.props.confirmationMessage ? (
+            <p>Are you sure?</p>
+          ) : typeof this.props.confirmationMessage === "string" ? (
+            parseHtml(this.props.confirmationMessage)
+          ) : (
+            this.props.confirmationMessage
+          )}
+        </div>
         <div className="action-buttons split flex-end align-end">
           <button className="btn danger" onClick={this.props.onYes}>
             {this.props.yesButtonText || "Yes"}

@@ -10,8 +10,7 @@ import { withClient, WithClientProps } from "../../graphql/withApolloClient";
 import { PageTitle, ProductTitle } from "../../components/commonStyles";
 import LoadingProductDescription from "../../components/loading/LoadingProductDescription";
 import PriceViewer from "../../components/PriceViewer";
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
+import parseHtml from "../../utils/parseHtml";
 
 const ProductDescriptionStyled = styled.div`
   & > * {
@@ -124,10 +123,6 @@ class ProductDescription extends Component<
     }
   };
 
-  parseHtml = (html: string) => {
-    const clean = DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
-    return parse(clean);
-  };
   render() {
     return this.state.currentProduct ? (
       <ProductDescriptionStyled className="split">
@@ -167,7 +162,7 @@ class ProductDescription extends Component<
               : "Out of Stock"}
           </AddToCartButton>
           <Description>
-            {this.parseHtml(this.state.currentProduct.description)}
+            {parseHtml(this.state.currentProduct.description)}
           </Description>
         </ProductDetails>
       </ProductDescriptionStyled>
