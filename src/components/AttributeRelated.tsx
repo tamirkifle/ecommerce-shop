@@ -3,7 +3,9 @@ import { Component } from "react";
 import { Attribute, AttributeItem, SelectedAttribute } from "../types";
 
 const AttributeInputStyled = styled.div`
-  --flow-spacer: 0.5rem;
+  & > * {
+    --flow-spacer: 0.5rem;
+  }
 `;
 
 interface TypeProps {
@@ -12,21 +14,22 @@ interface TypeProps {
   swatch?: string | false;
 }
 const AttributeTitle = styled.p<TypeProps>`
-  font-family: var(--ff-roboto-c, "sans-serif");
-  font-weight: 700;
+  font-family: ${(p) => !p.mini && "var(--ff-roboto-c, 'sans-serif')"};
+  font-weight: ${(p) => (p.mini ? "400" : "700")};
   font-size: ${(p) => (p.mini ? "14px" : "1rem")};
-  text-transform: uppercase;
+  text-transform: ${(p) => !p.mini && "uppercase"}; ;
 `;
 
 const AttributeGroup = styled.div<TypeProps>`
-  --flex-spacer: ${(p) => (p.mini ? "0.625rem" : "0.75rem")};
+  & > * {
+    --flex-spacer: ${(p) => (p.mini ? "0.625rem" : "0.75rem")};
+  }
 `;
 
 const AttributeItemStyled = styled.button<TypeProps>`
   min-width: ${(p) => (p.swatch ? "32px" : p.mini ? "24px" : "63px")};
   min-height: ${(p) => (p.swatch ? "32px" : p.mini ? "24px" : "45px")};
-
-  padding: ${(p) => (p.swatch ? 0 : p.mini ? "3px 6px" : "0.7rem 1rem")};
+  padding: ${(p) => (p.swatch ? 0 : "3px 6px")};
   font-size: ${(p) => p.mini && "14px"};
   background: ${(p) =>
     p.swatch
@@ -100,7 +103,9 @@ export class AttributeInput extends Component<
     const { attribute } = this.props;
     return (
       <AttributeInputStyled className="flow-content">
-        <AttributeTitle>{attribute.name}:</AttributeTitle>
+        <AttributeTitle mini={this.props.mini}>
+          {attribute.name}:
+        </AttributeTitle>
         <AttributeGroup className="split" mini={this.props.mini}>
           {attribute.items.map((item) => (
             <AttributeOption
@@ -160,7 +165,9 @@ export class AttributeViewer extends Component<AttributeViewerProps> {
   render() {
     return (
       <AttributeInputStyled className="flow-content">
-        <AttributeTitle>{this.props.attribute.name}:</AttributeTitle>
+        <AttributeTitle mini={this.props.mini}>
+          {this.props.attribute.name}:
+        </AttributeTitle>
         <AttributeGroup className="split" mini={this.props.mini}>
           {this.props.attribute.items.map((item) => (
             <AttributeOption

@@ -39,9 +39,9 @@ const Price = styled.div<StyleProps>`
   font-size: ${(p) => (p.type === "cart" ? "1.25rem" : "inherit")};
   font-weight: ${(p) => (p.type === "cart" ? "700" : "inherit")};
 `;
-const Attributes = styled.div`
+const Attributes = styled.div<StyleProps>`
   & > * {
-    --flow-spacer: 0.5rem;
+    --flow-spacer: ${(p) => (p.type === "minicart" ? "0.5rem" : "1rem")};
   }
 `;
 const ProductInfo = styled.div<StyleProps>`
@@ -77,7 +77,7 @@ export class CartItemViewer extends Component<
               type={this.props.type}
             />
           )}
-          <Attributes className="flow-content">
+          <Attributes type={this.props.type} className="flow-content">
             {this.props.cartItem.attributes.map((attribute) =>
               this.props.type === "cart" ? (
                 <AttributeViewer
