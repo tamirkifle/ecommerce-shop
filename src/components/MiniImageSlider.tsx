@@ -1,9 +1,15 @@
 import styled from "@emotion/styled";
 import { Component } from "react";
+import { CartViewerTypes } from "../types";
 
-const ViewerContainerStyled = styled.div`
-  width: 141px;
-  height: 184px;
+interface TypeProps {
+  type?: CartViewerTypes;
+}
+const ViewerContainerStyled = styled.div<TypeProps>`
+  width: ${(p) =>
+    p.type === "modal" ? "105px" : p.type === "minicart" ? "90px" : "141px"};
+  height: ${(p) =>
+    p.type === "modal" ? "184px" : p.type === "minicart" ? "auto" : "184px"};
   overflow: hidden;
   position: relative;
   img {
@@ -32,7 +38,7 @@ const SliderButton = styled.button<SliderButtonProps>`
 
 interface MiniImageSliderProps {
   gallery: string[];
-  style?: React.CSSProperties;
+  type?: CartViewerTypes;
 }
 
 interface MiniImageSliderState {
@@ -47,7 +53,7 @@ class MiniImageSlider extends Component<
 
   render() {
     return (
-      <ViewerContainerStyled style={this.props.style}>
+      <ViewerContainerStyled type={this.props.type}>
         {this.props.gallery.length > 1 && (
           <SliderButton
             direction="left"

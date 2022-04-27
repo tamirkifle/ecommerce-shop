@@ -5,22 +5,29 @@ import Overlay from "../portals/Overlay";
 interface DropdownStyledProps {
   isOpen: boolean;
   top?: string;
+  left?: string;
+  right?: string;
+  minWidth?: string;
 }
 const DropdownStyled = styled.div<DropdownStyledProps>`
   position: absolute;
-  top: 100%;
+  top: ${(p) => (p.top ? p.top : "100%")};
+  left: ${(p) => (p.left ? p.left : !p.left && !p.right ? "0" : null)};
+  right: ${(p) => p.right && p.right};
   z-index: 1;
   box-shadow: var(--bs);
   background-color: white;
   display: ${(p) => (p.isOpen ? "inline-block" : "none")};
-  min-width: 150px;
+  min-width: ${(p) => (p.minWidth ? p.minWidth : "150px")};
 `;
 interface DropdownProps {
   isOpen: boolean;
   onClose: () => void;
   clearOverlay?: boolean;
   top?: string;
-  style?: React.CSSProperties;
+  left?: string;
+  right?: string;
+  minWidth?: string;
 }
 
 interface DropdownState {}
@@ -30,7 +37,13 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
     return (
       this.props.isOpen && (
         <>
-          <DropdownStyled isOpen={this.props.isOpen} style={this.props.style}>
+          <DropdownStyled
+            isOpen={this.props.isOpen}
+            left={this.props.left}
+            right={this.props.right}
+            top={this.props.top}
+            minWidth={this.props.minWidth}
+          >
             {this.props.children}
           </DropdownStyled>
           <Overlay

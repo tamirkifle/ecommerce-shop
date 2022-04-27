@@ -1,19 +1,25 @@
 import styled from "@emotion/styled";
 import { Component } from "react";
 
+interface TypeProps {
+  mini?: boolean;
+}
 const QuantityCounterStyled = styled.div`
   text-align: center;
 `;
-const QuanitityButton = styled.button`
-  font-size: 1.5rem;
+const QuanitityButton = styled.button<TypeProps>`
+  font-size: 1rem;
+  padding: ${(p) => p.mini && "0"};
   font-weight: 500;
+  min-width: ${(p) => (p.mini ? "24px" : "45px")};
+  min-height: ${(p) => (p.mini ? "24px" : "45px")};
 `;
 
 interface QuantityCounterProps {
   quantity: number;
   increaseQuantity: () => void;
   decreaseQuantity: () => void;
-  btnStyle?: React.CSSProperties;
+  mini?: boolean;
 }
 
 interface QuantityCounterState {}
@@ -30,7 +36,7 @@ class QuantityCounter extends Component<
           onClick={() => {
             this.props.increaseQuantity();
           }}
-          style={this.props.btnStyle}
+          mini={this.props.mini}
         >
           ＋
         </QuanitityButton>
@@ -38,7 +44,7 @@ class QuantityCounter extends Component<
         <QuanitityButton
           className="btn"
           onClick={() => this.props.decreaseQuantity()}
-          style={this.props.btnStyle}
+          mini={this.props.mini}
         >
           －
         </QuanitityButton>

@@ -19,10 +19,7 @@ class AddToCartModal extends Component<
     return (
       <ModalBaseStyled>
         <h2>Successfully added to cart!</h2>
-        <CartItemViewer
-          cartItem={this.props.cartItem}
-          type="added-to-cart-modal"
-        />
+        <CartItemViewer cartItem={this.props.cartItem} type="modal" />
         <div className="action-buttons split flex-end align-end">
           <Link className="btn accent" to="/cart" onClick={closeModal}>
             Go To Cart

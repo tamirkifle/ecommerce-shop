@@ -71,7 +71,7 @@ export class CartItemViewer extends Component<
             <span>{this.props.cartItem.brand}</span>
             <span>{this.props.cartItem.name}</span>
           </ProductTitle>
-          {this.props.type !== "added-to-cart-modal" && (
+          {this.props.type !== "modal" && (
             <PriceViewer
               priceData={this.props.cartItem.prices}
               type={this.props.type}
@@ -101,9 +101,10 @@ export class CartItemViewer extends Component<
           </Attributes>
         </ProductInfo>
         <QtyImageContainer className="split" type={this.props.type}>
-          {this.props.type !== "added-to-cart-modal" && (
+          {this.props.type !== "modal" && (
             <QuantityCounter
               quantity={this.props.cartItem.quantity}
+              mini={this.props.type !== "cart"}
               increaseQuantity={() =>
                 setQuantity(
                   this.props.cartItem,
@@ -116,29 +117,11 @@ export class CartItemViewer extends Component<
                   this.props.cartItem.quantity - 1
                 )
               }
-              btnStyle={{
-                fontSize: "1rem",
-                padding: "0",
-                minWidth: `${this.props.type === "cart" ? "45px" : "24px"}`,
-                minHeight: `${this.props.type === "cart" ? "45px" : "24px"}`,
-              }}
             />
           )}
           <MiniImageSlider
             gallery={this.props.cartItem.gallery}
-            style={
-              this.props.type === "added-to-cart-modal"
-                ? {
-                    width: "105px",
-                    height: "184px",
-                  }
-                : this.props.type === "minicart"
-                ? {
-                    width: "90px",
-                    height: "auto",
-                  }
-                : {}
-            }
+            type={this.props.type}
           />
         </QtyImageContainer>
       </CartItemStyled>
@@ -215,13 +198,7 @@ export class ModalProductViewer extends Component<
         </ProductInfo>
 
         <QtyImageContainer>
-          <MiniImageSlider
-            gallery={this.props.product.gallery}
-            style={{
-              width: "105px",
-              height: "184px",
-            }}
-          />
+          <MiniImageSlider gallery={this.props.product.gallery} type="modal" />
         </QtyImageContainer>
       </ModalProductStyled>
     );

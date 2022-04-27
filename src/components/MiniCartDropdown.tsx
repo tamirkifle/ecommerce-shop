@@ -97,9 +97,10 @@ class MiniCartDropdown extends Component<
           </CartIconContainer>
         </CartButton>
         <Dropdown
-          style={{ right: "0", minWidth: "341px" }}
           isOpen={isMiniCartOpen}
           onClose={closeDropdowns}
+          right="0"
+          minWidth="341px"
         >
           {cartItems.length > 0 ? (
             <>

@@ -35,7 +35,7 @@ export const confirmWithModal = (
         cartItem ? (
           <>
             <h2>{confirmationMessage}</h2>
-            <CartItemViewer cartItem={cartItem} type="added-to-cart-modal" />
+            <CartItemViewer cartItem={cartItem} type="modal" />
           </>
         ) : (
           confirmationMessage
