@@ -1,14 +1,16 @@
 import { CartItem, Currency } from "../types";
 
+const localStoragePrefix = `shophavenv2`;
+
 export const localStorageCart = JSON.parse(
-  localStorage.getItem("shophaven-cart") as string
+  localStorage.getItem(`${localStoragePrefix}-cart`) as string
 )?.map((cartItem: CartItem) => ({
   ...cartItem,
   selectedAttributes: new Map(Object.entries(cartItem.selectedAttributes)),
 }));
 
 export const localStorageCurrency = JSON.parse(
-  localStorage.getItem("shophaven-currency") as string
+  localStorage.getItem(`${localStoragePrefix}-currency`) as string
 );
 
 export const saveCartOnLocalStorage = (cartItems: CartItem[]) => {
@@ -16,8 +18,14 @@ export const saveCartOnLocalStorage = (cartItems: CartItem[]) => {
     ...cartItem,
     selectedAttributes: Object.fromEntries(cartItem.selectedAttributes),
   }));
-  localStorage.setItem("shophaven-cart", JSON.stringify(cartItemsForLS));
+  localStorage.setItem(
+    `${localStoragePrefix}-cart`,
+    JSON.stringify(cartItemsForLS)
+  );
 };
 export const saveCurrencyOnLocalStorage = (currency: Currency) => {
-  localStorage.setItem("shophaven-currency", JSON.stringify(currency));
+  localStorage.setItem(
+    `${localStoragePrefix}-currency`,
+    JSON.stringify(currency)
+  );
 };
