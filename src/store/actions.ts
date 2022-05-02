@@ -27,35 +27,76 @@ export const changeCurrency = (newCurrency: Currency) => {
   saveCurrencyOnLocalStorage(newCurrency);
 };
 
+const findItemInCart = (
+  product: Product,
+  selectedAttributes: SelectedAttributes,
+  cartItems: CartItem[]
+) => {
+  //find the items with the same product id in the cart
+  const sameProductsInCart = cartItems.filter(
+    (oldCartItem) => oldCartItem.productId === product.id
+  );
+
+  //Check the products for the one with the same selected attributes
+  const cartItemSameAttributes = sameProductsInCart.find((oldCartItem) => {
+    let allSameAttributes = true;
+    for (const [key, value] of selectedAttributes) {
+      const oldSelectedAttributes = oldCartItem.selectedAttributes.get(key);
+      if (
+        !oldSelectedAttributes ||
+        (oldSelectedAttributes.id === value.id &&
+          oldSelectedAttributes.item.id !== value.item.id)
+      ) {
+        allSameAttributes = false;
+        break;
+      }
+    }
+    return allSameAttributes;
+  });
+  return cartItemSameAttributes;
+};
+
 export const addToCart = (
   itemToAdd: Product,
   selectedAttributes: SelectedAttributes
 ): boolean => {
   try {
-    let cartItemToAdd: CartItem = productToCartItem(
-      itemToAdd,
-      selectedAttributes
-    );
-    for (const { id } of itemToAdd.attributes) {
-      if (!selectedAttributes.get(id)) {
-        throw new MissingAttributeError(
-          "All of the item attributes must be selected before adding to cart."
-        );
-      }
-    }
-    if (!cartItemToAdd.inStock) {
-      throw new OutOfStockError("Item is out of stock.");
-    }
     const oldState = globalStore();
-    const newState = {
-      ...oldState,
-      cartItems: [...oldState.cartItems, cartItemToAdd],
-    };
+    //check if there is an item in the cart with the same product id and same attributes
+    const itemInCart = findItemInCart(
+      itemToAdd,
+      selectedAttributes,
+      oldState.cartItems
+    );
+    if (itemInCart) {
+      setQuantity(itemInCart, itemInCart.quantity + 1);
+      renderAddedToCartModal(itemInCart);
+      return true;
+    } else {
+      let cartItemToAdd: CartItem = productToCartItem(
+        itemToAdd,
+        selectedAttributes
+      );
+      for (const { id } of itemToAdd.attributes) {
+        if (!selectedAttributes.get(id)) {
+          throw new MissingAttributeError(
+            "All of the item attributes must be selected before adding to cart."
+          );
+        }
+      }
+      if (!cartItemToAdd.inStock) {
+        throw new OutOfStockError("Item is out of stock.");
+      }
+      const newState = {
+        ...oldState,
+        cartItems: [...oldState.cartItems, cartItemToAdd],
+      };
 
-    globalStore(newState);
-    saveCartOnLocalStorage(newState.cartItems);
-    renderAddedToCartModal(cartItemToAdd);
-    return true;
+      globalStore(newState);
+      saveCartOnLocalStorage(newState.cartItems);
+      renderAddedToCartModal(cartItemToAdd);
+      return true;
+    }
   } catch (e: any) {
     if (
       e instanceof OutOfStockError ||

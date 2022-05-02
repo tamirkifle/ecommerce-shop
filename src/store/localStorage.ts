@@ -1,6 +1,6 @@
 import { CartItem, Currency } from "../types";
 
-const localStoragePrefix = `shophavenv2`;
+const localStoragePrefix = `shophavenv3`;
 
 export const localStorageCart = JSON.parse(
   localStorage.getItem(`${localStoragePrefix}-cart`) as string
