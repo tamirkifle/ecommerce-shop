@@ -30,10 +30,7 @@ function App() {
               element={<ProductDescription />}
             />
             <Route path="/cart" element={<Cart />} />
-            <Route
-              path="*"
-              element={<PageTitle>404: Page Not Found</PageTitle>}
-            />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </MainContent>
         <Modal />
