@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-const GRAPHQL_URL = "https://shophaven-backend.herokuapp.com/";
+const GRAPHQL_URL = "https://junior-react-endpoint.onrender.com/";
 
 const client = new ApolloClient({
   cache: new InMemoryCache({
